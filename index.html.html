@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plano de Estudo — Época Especial 2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Sora:wght@700;800&display=swap');
+
+  :root {
+    --bg: #0f0f13;
+    --surface: #1a1a24;
+    --surface2: #22222f;
+    --border: #2e2e3e;
+    --text: #e8e8f0;
+    --muted: #7878a0;
+    --tm: #ff6b6b;
+    --ast: #ffd93d;
+    --mb: #6bcb77;
+    --accent: #a78bfa;
+    --done: #4ade80;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  header h1 {
+    font-family: 'Sora', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  .exam-pills {
+    display: flex;
+    gap: 10px;
+  }
+
+  .pill {
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 100px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .pill.tm { background: rgba(255,107,107,0.15); color: var(--tm); border: 1px solid rgba(255,107,107,0.3); }
+  .pill.ast { background: rgba(255,217,61,0.15); color: var(--ast); border: 1px solid rgba(255,217,61,0.3); }
+  .pill.mb { background: rgba(107,203,119,0.15); color: var(--mb); border: 1px solid rgba(107,203,119,0.3); }
+
+  .main {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 32px 24px;
+  }
+
+  .tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 4px;
+    margin-bottom: 28px;
+  }
+
+  .tab {
+    flex: 1;
+    padding: 10px;
+    text-align: center;
+    font-size: 0.82rem;
+    font-weight: 600;
+    border-radius: 9px;
+    cursor: pointer;
+    color: var(--muted);
+    transition: all 0.2s;
+    border: none;
+    background: transparent;
+  }
+
+  .tab.active {
+    background: var(--surface2);
+    color: var(--text);
+  }
+
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* PLANO */
+  .day-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    margin-bottom: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .day-card.today { border-color: var(--accent); }
+  .day-card.done-day { opacity: 0.6; }
+
+  .day-header {
+    display: flex;
+    align-items: center;
+    padding: 16px 20px;
+    cursor: pointer;
+    gap: 14px;
+  }
+
+  .day-num {
+    font-family: 'Sora', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--muted);
+    min-width: 36px;
+  }
+
+  .day-card.today .day-num { color: var(--accent); }
+
+  .day-info { flex: 1; }
+  .day-date { font-size: 0.75rem; color: var(--muted); margin-bottom: 2px; }
+  .day-title { font-size: 0.92rem; font-weight: 600; }
+
+  .day-badge {
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 100px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .badge-tm { background: rgba(255,107,107,0.15); color: var(--tm); }
+  .badge-ast { background: rgba(255,217,61,0.15); color: var(--ast); }
+  .badge-mb { background: rgba(107,203,119,0.15); color: var(--mb); }
+  .badge-exam { background: rgba(167,139,250,0.2); color: var(--accent); }
+  .badge-rest { background: rgba(120,120,160,0.15); color: var(--muted); }
+
+  .check-btn {
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    border: 2px solid var(--border);
+    background: transparent;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+  }
+
+  .check-btn.checked { background: var(--done); border-color: var(--done); }
+
+  .day-body {
+    display: none;
+    padding: 0 20px 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .day-body.open { display: block; }
+
+  .session-block {
+    margin-top: 14px;
+  }
+
+  .session-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .task-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 12px;
+    background: var(--surface2);
+    border-radius: 9px;
+    margin-bottom: 6px;
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+
+  .task-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    margin-top: 4px;
+    flex-shrink: 0;
+  }
+
+  .dot-tm { background: var(--tm); }
+  .dot-ast { background: var(--ast); }
+  .dot-mb { background: var(--mb); }
+  .dot-all { background: var(--accent); }
+
+  /* PROFESSOR */
+  .subject-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .subject-btn {
+    padding: 8px 16px;
+    border-radius: 9px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .subject-btn.active-tm { background: rgba(255,107,107,0.15); color: var(--tm); border-color: rgba(255,107,107,0.4); }
+  .subject-btn.active-ast { background: rgba(255,217,61,0.15); color: var(--ast); border-color: rgba(255,217,61,0.4); }
+  .subject-btn.active-mb { background: rgba(107,203,119,0.15); color: var(--mb); border-color: rgba(107,203,119,0.4); }
+
+  .topic-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+
+  .topic-header {
+    padding: 16px 20px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .topic-title { font-size: 0.92rem; font-weight: 600; }
+  .topic-arrow { color: var(--muted); transition: transform 0.2s; }
+  .topic-arrow.open { transform: rotate(90deg); }
+
+  .topic-body {
+    display: none;
+    padding: 0 20px 20px;
+    border-top: 1px solid var(--border);
+  }
+
+  .topic-body.open { display: block; }
+
+  .topic-body h4 {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--muted);
+    margin: 14px 0 8px;
+  }
+
+  .topic-body p {
+    font-size: 0.87rem;
+    line-height: 1.65;
+    color: #c8c8e0;
+    margin-bottom: 10px;
+  }
+
+  .example-box {
+    background: var(--surface2);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 9px 9px 0;
+    padding: 12px 14px;
+    font-size: 0.84rem;
+    line-height: 1.5;
+    margin: 8px 0;
+    font-style: italic;
+    color: #d0d0f0;
+  }
+
+  .quiz-box {
+    background: var(--surface2);
+    border-radius: 10px;
+    padding: 14px;
+    margin-top: 10px;
+  }
+
+  .quiz-q {
+    font-size: 0.87rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+
+  .quiz-opt {
+    padding: 8px 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 6px;
+    font-size: 0.83rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .quiz-opt:hover { border-color: var(--accent); }
+  .quiz-opt.correct { background: rgba(74,222,128,0.1); border-color: var(--done); color: var(--done); }
+  .quiz-opt.wrong { background: rgba(255,107,107,0.1); border-color: var(--tm); color: var(--tm); }
+
+  /* PROGRESSO */
+  .progress-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'Sora', sans-serif;
+    font-size: 2.2rem;
+    font-weight: 800;
+    margin-bottom: 4px;
+  }
+
+  .stat-label { font-size: 0.78rem; color: var(--muted); }
+
+  .progress-bar-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 12px;
+  }
+
+  .pbar-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.83rem;
+    margin-bottom: 10px;
+  }
+
+  .pbar {
+    height: 8px;
+    background: var(--surface2);
+    border-radius: 100px;
+    overflow: hidden;
+  }
+
+  .pbar-fill {
+    height: 100%;
+    border-radius: 100px;
+    transition: width 0.5s ease;
+  }
+
+  .today-banner {
+    background: linear-gradient(135deg, rgba(167,139,250,0.15), rgba(167,139,250,0.05));
+    border: 1px solid rgba(167,139,250,0.3);
+    border-radius: 14px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    font-size: 0.87rem;
+  }
+
+  .today-banner strong { color: var(--accent); }
+
+  @media (max-width: 600px) {
+    .progress-grid { grid-template-columns: 1fr; }
+    .exam-pills { display: none; }
+    header h1 { font-size: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>📚 Plano de Estudo — Época Especial</h1>
+  <div class="exam-pills">
+    <span class="pill tm">📄 Text Mining 26/06</span>
+    <span class="pill ast">📈 Séries Temporais 07/07</span>
+    <span class="pill mb">🎲 Bayes 10/07</span>
+  </div>
+</header>
+
+<div class="main">
+
+  <div class="tabs">
+    <button class="tab active" onclick="showSection('plano', this)">📅 Plano Diário</button>
+    <button class="tab" onclick="showSection('professor', this)">🎓 Professor</button>
+    <button class="tab" onclick="showSection('progresso', this)">📊 Progresso</button>
+  </div>
+
+  <!-- PLANO DIÁRIO -->
+  <div class="section active" id="plano">
+    <div class="today-banner">
+      <strong>Hoje é 15 de Junho (Segunda)</strong> — Primeiro dia de estudo! Começa com Text Mining, que é a prova mais próxima (26/06). 💪
+    </div>
+    <div id="days-container"></div>
+  </div>
+
+  <!-- PROFESSOR -->
+  <div class="section" id="professor">
+    <div class="subject-tabs">
+      <button class="subject-btn active-tm" onclick="showSubject('tm', this)">📄 Text Mining</button>
+      <button class="subject-btn" onclick="showSubject('ast', this)">📈 Séries Temporais</button>
+      <button class="subject-btn" onclick="showSubject('mb', this)">🎲 Modelação Bayesiana</button>
+    </div>
+    <div id="content-tm" class="subject-content"></div>
+    <div id="content-ast" class="subject-content" style="display:none"></div>
+    <div id="content-mb" class="subject-content" style="display:none"></div>
+  </div>
+
+  <!-- PROGRESSO -->
+  <div class="section" id="progresso">
+    <div class="progress-grid">
+      <div class="stat-card">
+        <div class="stat-num" id="stat-done" style="color:var(--done)">0</div>
+        <div class="stat-label">dias completos</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="stat-left" style="color:var(--accent)">25</div>
+        <div class="stat-label">dias restantes</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="stat-pct" style="color:var(--ast)">0%</div>
+        <div class="stat-label">concluído</div>
+      </div>
+    </div>
+    <div class="progress-bar-wrap">
+      <div class="pbar-label"><span>📄 Text Mining</span><span id="pct-tm">0%</span></div>
+      <div class="pbar"><div class="pbar-fill" id="bar-tm" style="width:0%;background:var(--tm)"></div></div>
+    </div>
+    <div class="progress-bar-wrap">
+      <div class="pbar-label"><span>📈 Séries Temporais</span><span id="pct-ast">0%</span></div>
+      <div class="pbar"><div class="pbar-fill" id="bar-ast" style="width:0%;background:var(--ast)"></div></div>
+    </div>
+    <div class="progress-bar-wrap">
+      <div class="pbar-label"><span>🎲 Modelação Bayesiana</span><span id="pct-mb">0%</span></div>
+      <div class="pbar"><div class="pbar-fill" id="bar-mb" style="width:0%;background:var(--mb)"></div></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ===== PLANO DE ESTUDOS =====
+const days = [
+  { date: "15 Jun, Seg", label: "Início", subject: "tm", badge: "badge-tm", badgeText: "Text Mining",
+    tasks: ["Lê o resumo de Text Mining no separador Professor", "Conceitos: O que é NLP e Text Mining?", "Exercício: identifica 3 aplicações reais de Text Mining"] },
+  { date: "16 Jun, Ter", label: "Pré-processamento de Texto", subject: "tm", badge: "badge-tm", badgeText: "Text Mining",
+    tasks: ["Tokenização e remoção de stopwords", "Stemming vs Lemmatization", "Exercício prático: processa uma frase manualmente"] },
+  { date: "17 Jun, Qua", label: "Representação de Texto", subject: "tm", badge: "badge-tm", badgeText: "Text Mining",
+    tasks: ["Bag of Words (BoW)", "TF-IDF — como funciona e para que serve", "Quiz no separador Professor"] },
+  { date: "18 Jun, Qui", label: "Classificação de Texto", subject: "tm", badge: "badge-tm", badgeText: "Text Mining",
+    tasks: ["Naive Bayes para texto", "SVM e árvores de decisão aplicadas a texto", "Exemplo: classificar emails como spam ou não"] },
+  { date: "19 Jun, Sex", label: "Clustering e Topic Modeling", subject: "tm", badge: "badge-tm", badgeText: "Text Mining",
+    tasks: ["K-means aplicado a documentos", "LDA (Latent Dirichlet Allocation) — conceito simples", "Exercício: o que é um tópico num conjunto de textos?"] },
+  { date: "20 Jun, Sáb", label: "Manhã de revisão", subject: "tm", badge: "badge-tm", badgeText: "Text Mining",
+    tasks: ["Revisão geral de todos os tópicos TM", "Faz os quizzes do separador Professor", "Anota dúvidas para resolver antes da prova"] },
+  { date: "21 Jun, Dom", label: "Descanso 🌿", subject: "rest", badge: "badge-rest", badgeText: "Descanso",
+    tasks: ["Dia de descanso — não estudas à tarde/noite", "Se quiseres, só uma leitura leve de 20 min de manhã"] },
+  { date: "22 Jun, Seg", label: "Word Embeddings", subject: "tm", badge: "badge-tm", badgeText: "Text Mining",
+    tasks: ["Word2Vec — intuição básica", "GloVe e FastText: diferenças", "Por que os embeddings são melhores que BoW?"] },
+  { date: "23 Jun, Ter", label: "Sentiment Analysis", subject: "tm", badge: "badge-tm", badgeText: "Text Mining",
+    tasks: ["Análise de sentimento: positivo/negativo/neutro", "Abordagens léxicas vs ML", "Exemplo real: reviews de produto"] },
+  { date: "24 Jun, Qua", label: "Revisão Final Text Mining", subject: "tm", badge: "badge-tm", badgeText: "Text Mining",
+    tasks: ["Revisão rápida de todos os tópicos", "Simula a prova: responde perguntas sem ver as notas", "Organiza folha de fórmulas/conceitos chave"] },
+  { date: "25 Jun, Qui", label: "Véspera da prova 🎯", subject: "tm", badge: "badge-exam", badgeText: "VÉSPERA",
+    tasks: ["Leitura leve — só conceitos, nada novo", "Descansa bem à tarde/noite", "Prepara o que levas para a prova"] },
+  { date: "26 Jun, Sex", label: "🔴 PROVA: Text Mining 18:30", subject: "exam", badge: "badge-exam", badgeText: "EXAME",
+    tasks: ["Prova Text Mining — 18:30 a 21:30", "Sala: C6.02", "Boa sorte! 💪"] },
+  { date: "27 Jun, Sáb", label: "Início: Séries Temporais", subject: "ast", badge: "badge-ast", badgeText: "Séries Temporais",
+    tasks: ["O que é uma série temporal?", "Componentes: tendência, sazonalidade, ruído", "Exemplos: temperatura, vendas, bolsa"] },
+  { date: "28 Jun, Dom", label: "Descanso 🌿", subject: "rest", badge: "badge-rest", badgeText: "Descanso",
+    tasks: ["Dia de descanso merecido após a prova de TM"] },
+  { date: "29 Jun, Seg", label: "Modelos ARIMA", subject: "ast", badge: "badge-ast", badgeText: "Séries Temporais",
+    tasks: ["AR, MA e ARMA — intuição simples", "ARIMA — o que é o I (integrado)?", "Como identificar p, d, q?"] },
+  { date: "30 Jun, Ter", label: "Estacionaridade e ACF/PACF", subject: "ast", badge: "badge-ast", badgeText: "Séries Temporais",
+    tasks: ["O que é estacionaridade e por que importa?", "Autocorrelação (ACF) e autocorrelação parcial (PACF)", "Como ler os gráficos ACF/PACF"] },
+  { date: "1 Jul, Qua", label: "Sazonalidade e SARIMA", subject: "ast", badge: "badge-ast", badgeText: "Séries Temporais",
+    tasks: ["Modelos sazonais: SARIMA", "Decomposição de séries temporais", "Exemplo: vendas mensais com padrão sazonal"] },
+  { date: "2 Jul, Qui", label: "Previsão e Avaliação", subject: "ast", badge: "badge-ast", badgeText: "Séries Temporais",
+    tasks: ["MAE, RMSE, MAPE — como avaliar previsões?", "Horizonte de previsão e intervalos de confiança", "Comparar modelos: qual escolher?"] },
+  { date: "3 Jul, Sex", label: "Modelos alternativos", subject: "ast", badge: "badge-ast", badgeText: "Séries Temporais",
+    tasks: ["Suavização exponencial (Holt-Winters)", "Prophet (Facebook) — intuição", "Quando usar cada modelo?"] },
+  { date: "4 Jul, Sáb", label: "Revisão Séries Temporais", subject: "ast", badge: "badge-ast", badgeText: "Séries Temporais",
+    tasks: ["Revisão geral — todos os tópicos", "Faz os quizzes do separador Professor", "Simula perguntas de exame"] },
+  { date: "5 Jul, Dom", label: "Descanso 🌿", subject: "rest", badge: "badge-rest", badgeText: "Descanso",
+    tasks: ["Descanso — não estudas à tarde/noite"] },
+  { date: "6 Jul, Seg", label: "Véspera Séries Temporais 🎯", subject: "ast", badge: "badge-exam", badgeText: "VÉSPERA",
+    tasks: ["Revisão leve de fórmulas e conceitos", "Descansa bem", "Prepara o material para amanhã"] },
+  { date: "7 Jul, Ter", label: "🟡 PROVA: Séries Temporais 18:30", subject: "exam", badge: "badge-exam", badgeText: "EXAME",
+    tasks: ["Prova Séries Temporais — 18:30 a 21:30", "Sala: AA3.28", "Vai com calma, já estudaste tudo! ⭐"] },
+  { date: "8 Jul, Qua", label: "Modelação Bayesiana — Base", subject: "mb", badge: "badge-mb", badgeText: "Bayes",
+    tasks: ["Probabilidade condicional e Teorema de Bayes", "Prior, Likelihood, Posterior — os 3 elementos", "Exemplo simples: teste médico com Bayes"] },
+  { date: "9 Jul, Qui", label: "Inferência Bayesiana", subject: "mb", badge: "badge-mb", badgeText: "Bayes",
+    tasks: ["Distribuições conjugadas (Beta-Binomial, Normal-Normal)", "Credible intervals vs intervalos de confiança frequentistas", "Revisão geral e simulação de exame"] },
+  { date: "10 Jul, Sex", label: "🟢 PROVA: Modelação Bayesiana 18:30", subject: "exam", badge: "badge-exam", badgeText: "EXAME",
+    tasks: ["Prova Modelação Bayesiana — 18:30 a 21:30", "Sala: AA2.25", "Última prova — dás tudo! 🏆"] },
+];
+
+// ===== CONTEÚDO PROFESSOR =====
+const tmTopics = [
+  { title: "O que é Text Mining?",
+    explain: "Text Mining (mineração de texto) é o processo de extrair informação útil e padrões a partir de texto não estruturado. Pensa assim: tens milhares de reviews de clientes — o Text Mining ajuda-te a perceber automaticamente o que as pessoas gostam ou não gostam, sem leres uma por uma.",
+    example: "Exemplo real: a Amazon usa Text Mining para analisar reviews e perceber quais produtos têm problemas frequentes. O Netflix usa para perceber o que os utilizadores dizem sobre séries.",
+    quiz: { q: "O que é Text Mining?", opts: ["Minerar ouro com computadores", "Extrair padrões úteis de texto não estruturado", "Criar bases de dados de texto", "Comprimir ficheiros de texto"], correct: 1 }
+  },
+  { title: "Pré-processamento de Texto",
+    explain: "Antes de analisar texto, precisamos de o limpar. Os passos principais são: (1) Tokenização: dividir o texto em palavras; (2) Remoção de stopwords: tirar palavras sem significado como 'o', 'a', 'e', 'que'; (3) Stemming: reduzir palavras à raiz — 'correndo', 'correu', 'correr' → 'corr'; (4) Lemmatization: mais inteligente que stemming — 'is', 'are', 'was' → 'be'.",
+    example: "Frase original: 'Os gatos estavam a correr muito rápido pelos jardins'\nApós pré-processamento: ['gat', 'corr', 'rápid', 'jardim']",
+    quiz: { q: "O que faz a remoção de stopwords?", opts: ["Remove erros ortográficos", "Remove palavras sem significado como 'o', 'a', 'e'", "Remove pontuação", "Remove números"], correct: 1 }
+  },
+  { title: "TF-IDF — Como o Texto Vira Números",
+    explain: "Para aplicar algoritmos de ML ao texto, precisamos de convertê-lo em números. TF-IDF (Term Frequency-Inverse Document Frequency) dá um peso a cada palavra: palavras que aparecem muito num documento específico mas raramente nos outros têm peso alto — são as mais 'características' desse documento. Palavras que aparecem em todos os documentos (como 'o', 'e') têm peso baixo.",
+    example: "Se a palavra 'neural' aparece 10x num artigo de IA mas só 2x nos outros 1000 artigos, ela tem TF-IDF alto → é uma palavra característica desse artigo.",
+    quiz: { q: "Uma palavra com TF-IDF alto significa que...", opts: ["Aparece em todos os documentos", "É muito comum em todo o corpus", "É característica de um documento específico", "É uma stopword"], correct: 2 }
+  },
+  { title: "Classificação de Texto",
+    explain: "Classificação de texto é atribuir uma categoria a um texto automaticamente. Exemplos: Spam vs Não-spam; Sentimento positivo/negativo; Tópico do artigo (desporto, política, tecnologia). O algoritmo mais clássico para texto é o Naive Bayes — usa probabilidades para decidir a classe mais provável dado o texto.",
+    example: "Email com as palavras 'ganhou', 'prémio', 'clique aqui' → probabilidade de spam: 95%. Email com 'reunião', 'relatório', 'equipa' → probabilidade de spam: 2%.",
+    quiz: { q: "Para que serve a classificação de texto?", opts: ["Apenas para detetar spam", "Atribuir automaticamente categorias a textos", "Traduzir textos", "Comprimir textos"], correct: 1 }
+  },
+  { title: "Word Embeddings — Palavras como Vectores",
+    explain: "Word Embeddings representam palavras como vectores numéricos num espaço onde palavras semelhantes ficam próximas. Word2Vec é o mais famoso: aprende que 'rei' - 'homem' + 'mulher' ≈ 'rainha'. Isto é muito mais poderoso que BoW porque captura significado e contexto.",
+    example: "No espaço de embeddings: 'cachorro' e 'gato' ficam próximos porque ambos são animais domésticos. 'Banco' (financeiro) e 'banco' (sentar) ficam em zonas diferentes.",
+    quiz: { q: "Qual a vantagem dos word embeddings sobre Bag of Words?", opts: ["São mais rápidos de calcular", "Capturam o significado e contexto das palavras", "Usam menos memória", "São mais fáceis de entender"], correct: 1 }
+  },
+];
+
+const astTopics = [
+  { title: "O que é uma Série Temporal?",
+    explain: "Uma série temporal é uma sequência de valores medidos ao longo do tempo, com intervalos regulares. A ordem importa! Não podes baralhar os dados como em ML tradicional. Exemplos: temperatura diária, preço de ações, vendas mensais, número de utilizadores por hora.",
+    example: "Temperatura em Lisboa: Jan:12°, Fev:13°, Mar:15°, Abr:17°, Mai:20°... Cada valor depende dos anteriores e tem padrões sazonais (Verão quente, Inverno frio).",
+    quiz: { q: "Qual é a característica fundamental de uma série temporal?", opts: ["Os valores são sempre crescentes", "A ordem temporal importa e os valores dependem do tempo", "Só tem valores positivos", "Deve ter exatamente 100 observações"], correct: 1 }
+  },
+  { title: "Componentes de uma Série Temporal",
+    explain: "Toda a série temporal tem componentes: (1) Tendência (Trend): direção geral — crescente, decrescente ou estável; (2) Sazonalidade (Seasonality): padrão que se repete — ex: vendas altas no Natal; (3) Ciclicidade: padrões mais longos, não fixos — ex: ciclos económicos; (4) Ruído (Residual): variação aleatória que não se explica.",
+    example: "Vendas de uma loja: Tendência crescente (negócio cresce) + Sazonalidade (picos no Natal) + Ruído (dia em que havia greve = vendas baixas inesperadas).",
+    quiz: { q: "O que é sazonalidade numa série temporal?", opts: ["A tendência geral da série", "Um padrão que se repete em intervalos fixos", "O ruído aleatório", "A média dos valores"], correct: 1 }
+  },
+  { title: "Estacionaridade e ACF/PACF",
+    explain: "Uma série é estacionária quando a média e variância não mudam ao longo do tempo — é uma condição necessária para muitos modelos. ACF (Autocorrelação): mede a correlação entre a série e versões dela própria deslocadas no tempo. PACF (Autocorrelação Parcial): o mesmo mas removendo o efeito dos lags intermédios. Usamos estes gráficos para escolher os parâmetros do modelo.",
+    example: "Se a ACF corta abruptamente no lag 2 e a PACF decai gradualmente → sugestão: modelo MA(2). Se o inverso → modelo AR.",
+    quiz: { q: "Para que servem os gráficos ACF e PACF?", opts: ["Para verificar se os dados são normais", "Para escolher os parâmetros p e q do modelo ARIMA", "Para remover outliers", "Para calcular a média da série"], correct: 1 }
+  },
+  { title: "Modelos ARIMA",
+    explain: "ARIMA(p,d,q) é o modelo mais clássico para séries temporais: AR(p) — AutoRegressive: o valor atual depende dos p valores anteriores; I(d) — Integrated: número de diferenciações para tornar a série estacionária; MA(q) — Moving Average: o valor atual depende dos q erros anteriores. SARIMA adiciona termos sazonais: SARIMA(p,d,q)(P,D,Q)[s].",
+    example: "ARIMA(1,1,1): usa 1 valor passado (AR), 1 diferenciação (I) para estacionaridade, e 1 erro passado (MA). É um modelo simples mas muito útil na prática.",
+    quiz: { q: "O que significa o 'd' em ARIMA(p,d,q)?", opts: ["Número de valores passados usados", "Número de diferenciações para estacionaridade", "Número de erros passados", "Duração do modelo"], correct: 1 }
+  },
+  { title: "Avaliação de Previsões",
+    explain: "Para saber se o modelo prevê bem, usamos métricas: MAE (Mean Absolute Error): erro médio absoluto — fácil de interpretar; RMSE (Root Mean Squared Error): penaliza mais os erros grandes; MAPE (Mean Absolute Percentage Error): erro em percentagem — bom para comparar séries diferentes. Quanto menor, melhor.",
+    example: "Modelo A: MAE = 5°C na previsão de temperatura. Modelo B: MAE = 2°C. Modelo B é melhor. Se MAPE = 10%, em média o modelo erra 10% do valor real.",
+    quiz: { q: "Qual métrica expressa o erro como percentagem?", opts: ["MAE", "RMSE", "MAPE", "R²"], correct: 2 }
+  },
+];
+
+const mbTopics = [
+  { title: "Teorema de Bayes — A Base de Tudo",
+    explain: "O Teorema de Bayes diz como actualizar a nossa crença quando obtemos nova informação. A fórmula é: P(A|B) = P(B|A) × P(A) / P(B). Em linguagem simples: a probabilidade de A dado que B aconteceu é proporcional à probabilidade de B dado A, multiplicado pela nossa crença inicial em A.",
+    example: "Teste de COVID com 99% de precisão. Se só 1% da população tem COVID e o teste deu positivo, qual a prob. de ter COVID? Pelo Bayes: ~50%! Parece contra-intuitivo mas é correto — doenças raras geram muitos falsos positivos.",
+    quiz: { q: "O que actualiza o Teorema de Bayes?", opts: ["A nossa crença com base em nova evidência", "A precisão dos instrumentos de medida", "A média da população", "A distribuição normal"], correct: 0 }
+  },
+  { title: "Prior, Likelihood e Posterior",
+    explain: "A Modelação Bayesiana tem 3 ingredientes: Prior P(θ): a nossa crença ANTES de ver os dados — o que sabemos ou assumimos; Likelihood P(dados|θ): a probabilidade de observar os dados dado um valor do parâmetro; Posterior P(θ|dados): a nossa crença DEPOIS de ver os dados — combina prior e likelihood. Fórmula: Posterior ∝ Likelihood × Prior.",
+    example: "Queremos estimar a probabilidade de uma moeda ser viciada. Prior: assumimos que é justa (50%). Likelihood: lançámos 10 vezes e saiu cara 8x. Posterior: actualizamos — agora acreditamos que é cerca de 70% cara.",
+    quiz: { q: "O Posterior combina...", opts: ["Apenas os dados observados", "Apenas o conhecimento prévio", "O Prior com a Likelihood (dados observados)", "A média e a variância"], correct: 2 }
+  },
+  { title: "Distribuições Conjugadas",
+    explain: "Uma distribuição conjugada é quando o Prior e o Posterior têm a mesma família de distribuições — muito conveniente matematicamente! Os pares mais comuns: Beta-Binomial: Prior Beta, dados Binomiais → Posterior Beta; Normal-Normal: Prior Normal, dados Normais → Posterior Normal. Isto permite calcular o Posterior analiticamente sem simulação.",
+    example: "Queres estimar a taxa de conversão de um site. Usas Prior Beta(1,1) (uniforme). Observas 30 compras em 100 visitas. Posterior: Beta(31, 71). A média do posterior é 31/102 ≈ 30% — próximo dos dados!",
+    quiz: { q: "Qual é a vantagem das distribuições conjugadas?", opts: ["São sempre a distribuição normal", "O Posterior tem a mesma família do Prior — fácil de calcular", "Só funcionam com dados binários", "Eliminam a necessidade do Prior"], correct: 1 }
+  },
+  { title: "Credible Intervals vs Intervalos de Confiança",
+    explain: "Esta é uma diferença crucial! Frequentista (Intervalo de Confiança): 'Se repetíssemos o experimento 100x, 95 vezes o intervalo conteria o verdadeiro valor'. NÃO diz que há 95% de prob. do parâmetro estar no intervalo! Bayesiano (Credible Interval): 'Há 95% de probabilidade de o parâmetro estar neste intervalo' — exactamente o que queremos dizer na prática. A interpretação Bayesiana é muito mais intuitiva!",
+    example: "Credible Interval de 95% para a taxa de conversão: [0.21, 0.39]. Interpretação: 'Há 95% de probabilidade de a taxa real estar entre 21% e 39%.' Simples e directo!",
+    quiz: { q: "Qual a interpretação correcta de um Credible Interval de 95%?", opts: ["95% dos dados estão neste intervalo", "Há 95% de probabilidade do parâmetro estar neste intervalo", "O experimento foi repetido 95 vezes", "O modelo tem 95% de precisão"], correct: 1 }
+  },
+];
+
+// ===== RENDER DAYS =====
+function renderDays() {
+  const container = document.getElementById('days-container');
+  const today = new Date('2026-06-15');
+  const checked = JSON.parse(localStorage.getItem('checked') || '{}');
+
+  days.forEach((day, i) => {
+    const isToday = i === 0;
+    const isPast = i < 0;
+    const isDone = checked[i];
+
+    const card = document.createElement('div');
+    card.className = `day-card${isToday ? ' today' : ''}${isDone ? ' done-day' : ''}`;
+    card.innerHTML = `
+      <div class="day-header" onclick="toggleDay(${i})">
+        <div class="day-num">${String(i+1).padStart(2,'0')}</div>
+        <div class="day-info">
+          <div class="day-date">${day.date}</div>
+          <div class="day-title">${day.label}</div>
+        </div>
+        <span class="day-badge ${day.badge}">${isToday ? '👉 HOJE' : day.badgeText}</span>
+        <button class="check-btn ${isDone ? 'checked' : ''}" onclick="event.stopPropagation(); toggleCheck(${i})" title="Marcar como feito">
+          ${isDone ? '✓' : ''}
+        </button>
+      </div>
+      <div class="day-body ${isToday ? 'open' : ''}" id="day-body-${i}">
+        <div class="session-block">
+          <div class="session-label">📖 O que fazer hoje de manhã</div>
+          ${day.tasks.map(t => `<div class="task-item"><div class="task-dot dot-${day.subject === 'exam' ? 'all' : day.subject}"></div><span>${t}</span></div>`).join('')}
+        </div>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+  updateProgress();
+}
+
+function toggleDay(i) {
+  const body = document.getElementById(`day-body-${i}`);
+  body.classList.toggle('open');
+}
+
+function toggleCheck(i) {
+  const checked = JSON.parse(localStorage.getItem('checked') || '{}');
+  checked[i] = !checked[i];
+  localStorage.setItem('checked', JSON.stringify(checked));
+  document.getElementById('days-container').innerHTML = '';
+  renderDays();
+}
+
+function updateProgress() {
+  const checked = JSON.parse(localStorage.getItem('checked') || '{}');
+  const total = days.length;
+  const done = Object.values(checked).filter(Boolean).length;
+  const tmDays = days.filter((d,i) => d.subject === 'tm').length;
+  const astDays = days.filter((d,i) => d.subject === 'ast').length;
+  const mbDays = days.filter((d,i) => d.subject === 'mb').length;
+  const tmDone = days.filter((d,i) => d.subject === 'tm' && checked[i]).length;
+  const astDone = days.filter((d,i) => d.subject === 'ast' && checked[i]).length;
+  const mbDone = days.filter((d,i) => d.subject === 'mb' && checked[i]).length;
+
+  document.getElementById('stat-done').textContent = done;
+  document.getElementById('stat-left').textContent = total - done;
+  document.getElementById('stat-pct').textContent = Math.round(done/total*100) + '%';
+
+  const tmPct = Math.round(tmDone/tmDays*100);
+  const astPct = Math.round(astDone/astDays*100);
+  const mbPct = Math.round(mbDone/mbDays*100);
+
+  document.getElementById('pct-tm').textContent = tmPct + '%';
+  document.getElementById('pct-ast').textContent = astPct + '%';
+  document.getElementById('pct-mb').textContent = mbPct + '%';
+  document.getElementById('bar-tm').style.width = tmPct + '%';
+  document.getElementById('bar-ast').style.width = astPct + '%';
+  document.getElementById('bar-mb').style.width = mbPct + '%';
+}
+
+// ===== RENDER PROFESSOR =====
+function renderTopics(topics, containerId, colorClass) {
+  const container = document.getElementById(containerId);
+  topics.forEach((topic, i) => {
+    const card = document.createElement('div');
+    card.className = 'topic-card';
+    card.innerHTML = `
+      <div class="topic-header" onclick="toggleTopic('topic-${containerId}-${i}', this)">
+        <div class="topic-title">${topic.title}</div>
+        <span class="topic-arrow" id="arrow-topic-${containerId}-${i}">▶</span>
+      </div>
+      <div class="topic-body" id="topic-${containerId}-${i}">
+        <h4>📖 Explicação</h4>
+        <p>${topic.explain}</p>
+        <div class="example-box">💡 ${topic.example}</div>
+        <h4>🧪 Mini Quiz</h4>
+        <div class="quiz-box">
+          <div class="quiz-q">${topic.quiz.q}</div>
+          ${topic.quiz.opts.map((opt, j) => `<div class="quiz-opt" onclick="checkQuiz(this, ${j}, ${topic.quiz.correct})">${String.fromCharCode(65+j)}) ${opt}</div>`).join('')}
+        </div>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function toggleTopic(id, header) {
+  const body = document.getElementById(id);
+  const arrow = header.querySelector('.topic-arrow');
+  body.classList.toggle('open');
+  arrow.classList.toggle('open');
+}
+
+function checkQuiz(el, chosen, correct) {
+  const opts = el.parentElement.querySelectorAll('.quiz-opt');
+  opts.forEach(o => o.style.pointerEvents = 'none');
+  if (chosen === correct) {
+    el.classList.add('correct');
+    el.textContent = '✓ ' + el.textContent + ' — Correto!';
+  } else {
+    el.classList.add('wrong');
+    opts[correct].classList.add('correct');
+  }
+}
+
+function showSubject(sub, btn) {
+  document.querySelectorAll('.subject-content').forEach(c => c.style.display = 'none');
+  document.querySelectorAll('.subject-btn').forEach(b => b.className = 'subject-btn');
+  document.getElementById('content-' + sub).style.display = 'block';
+  btn.className = 'subject-btn active-' + sub;
+}
+
+// ===== TABS =====
+function showSection(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ===== INIT =====
+renderDays();
+renderTopics(tmTopics, 'content-tm', 'tm');
+renderTopics(astTopics, 'content-ast', 'ast');
+renderTopics(mbTopics, 'content-mb', 'mb');
+</script>
+</body>
+</html>
