@@ -3,748 +3,1232 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Plano de Estudo — Época Especial 2026</title>
+<title>Plano de Estudo Mestrado — Época Especial 2026</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Sora:wght@700;800&display=swap');
-
-  :root {
-    --bg: #0f0f13;
-    --surface: #1a1a24;
-    --surface2: #22222f;
-    --border: #2e2e3e;
-    --text: #e8e8f0;
-    --muted: #7878a0;
-    --tm: #ff6b6b;
-    --ast: #ffd93d;
-    --mb: #6bcb77;
-    --accent: #a78bfa;
-    --done: #4ade80;
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Inter', sans-serif;
-    min-height: 100vh;
-    padding: 0;
-  }
-
-  header {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 20px 32px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-
-  header h1 {
-    font-family: 'Sora', sans-serif;
-    font-size: 1.2rem;
-    font-weight: 800;
-    letter-spacing: -0.02em;
-  }
-
-  .exam-pills {
-    display: flex;
-    gap: 10px;
-  }
-
-  .pill {
-    font-size: 0.72rem;
-    font-weight: 600;
-    padding: 5px 12px;
-    border-radius: 100px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .pill.tm { background: rgba(255,107,107,0.15); color: var(--tm); border: 1px solid rgba(255,107,107,0.3); }
-  .pill.ast { background: rgba(255,217,61,0.15); color: var(--ast); border: 1px solid rgba(255,217,61,0.3); }
-  .pill.mb { background: rgba(107,203,119,0.15); color: var(--mb); border: 1px solid rgba(107,203,119,0.3); }
-
-  .main {
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 32px 24px;
-  }
-
-  .tabs {
-    display: flex;
-    gap: 4px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 4px;
-    margin-bottom: 28px;
-  }
-
-  .tab {
-    flex: 1;
-    padding: 10px;
-    text-align: center;
-    font-size: 0.82rem;
-    font-weight: 600;
-    border-radius: 9px;
-    cursor: pointer;
-    color: var(--muted);
-    transition: all 0.2s;
-    border: none;
-    background: transparent;
-  }
-
-  .tab.active {
-    background: var(--surface2);
-    color: var(--text);
-  }
-
-  .section { display: none; }
-  .section.active { display: block; }
-
-  /* PLANO */
-  .day-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    margin-bottom: 12px;
-    overflow: hidden;
-    transition: border-color 0.2s;
-  }
-
-  .day-card.today { border-color: var(--accent); }
-  .day-card.done-day { opacity: 0.6; }
-
-  .day-header {
-    display: flex;
-    align-items: center;
-    padding: 16px 20px;
-    cursor: pointer;
-    gap: 14px;
-  }
-
-  .day-num {
-    font-family: 'Sora', sans-serif;
-    font-size: 1.5rem;
-    font-weight: 800;
-    color: var(--muted);
-    min-width: 36px;
-  }
-
-  .day-card.today .day-num { color: var(--accent); }
-
-  .day-info { flex: 1; }
-  .day-date { font-size: 0.75rem; color: var(--muted); margin-bottom: 2px; }
-  .day-title { font-size: 0.92rem; font-weight: 600; }
-
-  .day-badge {
-    font-size: 0.68rem;
-    font-weight: 700;
-    padding: 3px 10px;
-    border-radius: 100px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  .badge-tm { background: rgba(255,107,107,0.15); color: var(--tm); }
-  .badge-ast { background: rgba(255,217,61,0.15); color: var(--ast); }
-  .badge-mb { background: rgba(107,203,119,0.15); color: var(--mb); }
-  .badge-exam { background: rgba(167,139,250,0.2); color: var(--accent); }
-  .badge-rest { background: rgba(120,120,160,0.15); color: var(--muted); }
-
-  .check-btn {
-    width: 28px; height: 28px;
-    border-radius: 8px;
-    border: 2px solid var(--border);
-    background: transparent;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    transition: all 0.2s;
-    font-size: 0.9rem;
-    flex-shrink: 0;
-  }
-
-  .check-btn.checked { background: var(--done); border-color: var(--done); }
-
-  .day-body {
-    display: none;
-    padding: 0 20px 16px;
-    border-top: 1px solid var(--border);
-  }
-
-  .day-body.open { display: block; }
-
-  .session-block {
-    margin-top: 14px;
-  }
-
-  .session-label {
-    font-size: 0.7rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--muted);
-    margin-bottom: 8px;
-  }
-
-  .task-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    padding: 10px 12px;
-    background: var(--surface2);
-    border-radius: 9px;
-    margin-bottom: 6px;
-    font-size: 0.85rem;
-    line-height: 1.4;
-  }
-
-  .task-dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    margin-top: 4px;
-    flex-shrink: 0;
-  }
-
-  .dot-tm { background: var(--tm); }
-  .dot-ast { background: var(--ast); }
-  .dot-mb { background: var(--mb); }
-  .dot-all { background: var(--accent); }
-
-  /* PROFESSOR */
-  .subject-tabs {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-  }
-
-  .subject-btn {
-    padding: 8px 16px;
-    border-radius: 9px;
-    border: 1px solid var(--border);
-    background: var(--surface);
-    color: var(--muted);
-    font-size: 0.82rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .subject-btn.active-tm { background: rgba(255,107,107,0.15); color: var(--tm); border-color: rgba(255,107,107,0.4); }
-  .subject-btn.active-ast { background: rgba(255,217,61,0.15); color: var(--ast); border-color: rgba(255,217,61,0.4); }
-  .subject-btn.active-mb { background: rgba(107,203,119,0.15); color: var(--mb); border-color: rgba(107,203,119,0.4); }
-
-  .topic-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    margin-bottom: 10px;
-    overflow: hidden;
-  }
-
-  .topic-header {
-    padding: 16px 20px;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .topic-title { font-size: 0.92rem; font-weight: 600; }
-  .topic-arrow { color: var(--muted); transition: transform 0.2s; }
-  .topic-arrow.open { transform: rotate(90deg); }
-
-  .topic-body {
-    display: none;
-    padding: 0 20px 20px;
-    border-top: 1px solid var(--border);
-  }
-
-  .topic-body.open { display: block; }
-
-  .topic-body h4 {
-    font-size: 0.78rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    color: var(--muted);
-    margin: 14px 0 8px;
-  }
-
-  .topic-body p {
-    font-size: 0.87rem;
-    line-height: 1.65;
-    color: #c8c8e0;
-    margin-bottom: 10px;
-  }
-
-  .example-box {
-    background: var(--surface2);
-    border-left: 3px solid var(--accent);
-    border-radius: 0 9px 9px 0;
-    padding: 12px 14px;
-    font-size: 0.84rem;
-    line-height: 1.5;
-    margin: 8px 0;
-    font-style: italic;
-    color: #d0d0f0;
-  }
-
-  .quiz-box {
-    background: var(--surface2);
-    border-radius: 10px;
-    padding: 14px;
-    margin-top: 10px;
-  }
-
-  .quiz-q {
-    font-size: 0.87rem;
-    font-weight: 600;
-    margin-bottom: 10px;
-  }
-
-  .quiz-opt {
-    padding: 8px 12px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    margin-bottom: 6px;
-    font-size: 0.83rem;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .quiz-opt:hover { border-color: var(--accent); }
-  .quiz-opt.correct { background: rgba(74,222,128,0.1); border-color: var(--done); color: var(--done); }
-  .quiz-opt.wrong { background: rgba(255,107,107,0.1); border-color: var(--tm); color: var(--tm); }
-
-  /* PROGRESSO */
-  .progress-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-    margin-bottom: 28px;
-  }
-
-  .stat-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 20px;
-    text-align: center;
-  }
-
-  .stat-num {
-    font-family: 'Sora', sans-serif;
-    font-size: 2.2rem;
-    font-weight: 800;
-    margin-bottom: 4px;
-  }
-
-  .stat-label { font-size: 0.78rem; color: var(--muted); }
-
-  .progress-bar-wrap {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 20px;
-    margin-bottom: 12px;
-  }
-
-  .pbar-label {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.83rem;
-    margin-bottom: 10px;
-  }
-
-  .pbar {
-    height: 8px;
-    background: var(--surface2);
-    border-radius: 100px;
-    overflow: hidden;
-  }
-
-  .pbar-fill {
-    height: 100%;
-    border-radius: 100px;
-    transition: width 0.5s ease;
-  }
-
-  .today-banner {
-    background: linear-gradient(135deg, rgba(167,139,250,0.15), rgba(167,139,250,0.05));
-    border: 1px solid rgba(167,139,250,0.3);
-    border-radius: 14px;
-    padding: 16px 20px;
-    margin-bottom: 20px;
-    font-size: 0.87rem;
-  }
-
-  .today-banner strong { color: var(--accent); }
-
-  @media (max-width: 600px) {
-    .progress-grid { grid-template-columns: 1fr; }
-    .exam-pills { display: none; }
-    header h1 { font-size: 1rem; }
-  }
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Sora:wght@700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+:root {
+  --bg: #0f0f13; --surface: #1a1a24; --surface2: #22222f; --surface3: #2a2a3a;
+  --border: #2e2e3e; --border2: #3e3e55; --text: #e8e8f0; --muted: #7878a0; --muted2: #5a5a80;
+  --tm: #ff6b6b; --tm2: #ff4444; --ast: #ffd93d; --ast2: #ffb800;
+  --mb: #6bcb77; --mb2: #4aad58; --accent: #a78bfa; --accent2: #7c3aed;
+  --done: #4ade80; --warn: #fb923c; --info: #38bdf8; --code-bg: #1e1e2e;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.7; }
+header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+header h1 { font-family: 'Sora', sans-serif; font-size: 1.1rem; font-weight: 800; }
+.pills { display: flex; gap: 8px; flex-wrap: wrap; }
+.pill { font-size: 0.7rem; font-weight: 600; padding: 4px 10px; border-radius: 100px; }
+.pill.tm { background: rgba(255,107,107,0.15); color: var(--tm); border: 1px solid rgba(255,107,107,0.3); }
+.pill.ast { background: rgba(255,217,61,0.15); color: var(--ast); border: 1px solid rgba(255,217,61,0.3); }
+.pill.mb { background: rgba(107,203,119,0.15); color: var(--mb); border: 1px solid rgba(107,203,119,0.3); }
+.container { max-width: 1100px; margin: 0 auto; padding: 28px 24px; }
+.tabs { display: flex; gap: 4px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 4px; margin-bottom: 28px; flex-wrap: wrap; }
+.tab { flex: 1; min-width: 120px; padding: 10px 8px; text-align: center; font-size: 0.8rem; font-weight: 600; border-radius: 9px; cursor: pointer; color: var(--muted); transition: all 0.2s; border: none; background: transparent; }
+.tab:hover { color: var(--text); background: var(--surface2); }
+.tab.active { background: var(--surface2); color: var(--text); }
+.tab.tm.active { color: var(--tm); }
+.tab.ast.active { color: var(--ast); }
+.tab.mb.active { color: var(--mb); }
+.section { display: none; }
+.section.active { display: block; }
+h2 { font-family: 'Sora', sans-serif; font-size: 1.5rem; font-weight: 800; margin-bottom: 20px; }
+h3 { font-size: 1.1rem; font-weight: 700; margin: 24px 0 12px; }
+h4 { font-size: 0.95rem; font-weight: 600; margin: 16px 0 8px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+p { margin-bottom: 12px; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 24px; margin-bottom: 16px; }
+.card:hover { border-color: var(--border2); }
+.card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; cursor: pointer; }
+.card-header h3 { margin: 0; font-size: 1rem; }
+.badge { font-size: 0.7rem; font-weight: 700; padding: 3px 10px; border-radius: 100px; }
+.badge.tm { background: rgba(255,107,107,0.2); color: var(--tm); }
+.badge.ast { background: rgba(255,217,61,0.2); color: var(--ast); }
+.badge.mb { background: rgba(107,203,119,0.2); color: var(--mb); }
+.badge.acc { background: rgba(167,139,250,0.2); color: var(--accent); }
+.collapsible-content { overflow: hidden; transition: max-height 0.3s ease; }
+.collapsible-content.collapsed { max-height: 0; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+.grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin: 16px 0; }
+@media(max-width:700px) { .grid2, .grid3 { grid-template-columns: 1fr; } }
+.box { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+.box.tm-box { border-left: 3px solid var(--tm); }
+.box.ast-box { border-left: 3px solid var(--ast); }
+.box.mb-box { border-left: 3px solid var(--mb); }
+.box.info-box { border-left: 3px solid var(--info); }
+.box.warn-box { border-left: 3px solid var(--warn); }
+.box.done-box { border-left: 3px solid var(--done); }
+.box.acc-box { border-left: 3px solid var(--accent); }
+.box h4 { margin-top: 0; color: var(--text); }
+code { font-family: 'JetBrains Mono', monospace; background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 0.85em; color: #cba6f7; }
+pre { font-family: 'JetBrains Mono', monospace; background: var(--code-bg); border: 1px solid var(--border); border-radius: 10px; padding: 16px; overflow-x: auto; font-size: 0.85em; margin: 12px 0; color: #cdd6f4; }
+pre .c { color: #6c7086; }
+pre .k { color: #cba6f7; }
+pre .s { color: #a6e3a1; }
+pre .n { color: #89b4fa; }
+pre .num { color: #fab387; }
+.formula { background: var(--code-bg); border: 1px solid var(--border2); border-radius: 10px; padding: 16px; text-align: center; font-family: 'JetBrains Mono', monospace; color: var(--accent); margin: 12px 0; font-size: 1.05em; }
+table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.88em; }
+th { background: var(--surface3); color: var(--text); padding: 10px 14px; text-align: left; border-bottom: 2px solid var(--border2); font-weight: 600; }
+td { padding: 9px 14px; border-bottom: 1px solid var(--border); color: var(--muted); }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--surface2); color: var(--text); }
+.flashcard { background: var(--surface2); border: 1px solid var(--border2); border-radius: 12px; padding: 16px 20px; margin-bottom: 10px; cursor: pointer; transition: all 0.2s; }
+.flashcard:hover { border-color: var(--accent); }
+.flashcard .q { font-weight: 600; color: var(--text); }
+.flashcard .a { color: var(--muted); margin-top: 10px; display: none; padding-top: 10px; border-top: 1px solid var(--border); }
+.flashcard.open .a { display: block; }
+.flashcard.open { border-color: var(--accent); background: var(--surface3); }
+.quiz-item { background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 18px; margin-bottom: 12px; }
+.quiz-item p { font-weight: 600; margin-bottom: 12px; }
+.quiz-option { display: block; padding: 8px 14px; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; margin-bottom: 6px; transition: all 0.15s; font-size: 0.9em; }
+.quiz-option:hover { border-color: var(--accent); background: rgba(167,139,250,0.08); }
+.quiz-option.correct { border-color: var(--done); background: rgba(74,222,128,0.1); color: var(--done); }
+.quiz-option.wrong { border-color: var(--tm); background: rgba(255,107,107,0.1); color: var(--tm); }
+.quiz-feedback { margin-top: 10px; padding: 10px 14px; border-radius: 8px; font-size: 0.88em; display: none; }
+.quiz-feedback.show { display: block; }
+.quiz-feedback.ok { background: rgba(74,222,128,0.1); border: 1px solid var(--done); color: var(--done); }
+.quiz-feedback.err { background: rgba(255,107,107,0.1); border: 1px solid var(--tm); color: var(--tm); }
+.step { display: flex; gap: 14px; margin-bottom: 16px; align-items: flex-start; }
+.step-num { background: var(--accent); color: white; border-radius: 50%; width: 28px; height: 28px; min-width: 28px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; }
+.step-content { flex: 1; }
+.progress-bar { background: var(--surface2); border-radius: 100px; height: 8px; overflow: hidden; margin: 8px 0; }
+.progress-fill { height: 100%; border-radius: 100px; transition: width 0.3s; }
+.tag { display: inline-block; font-size: 0.7rem; font-weight: 600; padding: 2px 8px; border-radius: 100px; background: var(--surface3); border: 1px solid var(--border2); color: var(--muted); margin: 2px; }
+details { margin: 10px 0; }
+details > summary { cursor: pointer; font-weight: 600; color: var(--accent); padding: 8px 12px; background: var(--surface2); border-radius: 8px; list-style: none; }
+details > summary::before { content: "▶ "; }
+details[open] > summary::before { content: "▼ "; }
+details > div { padding: 12px; border: 1px solid var(--border); border-top: none; border-radius: 0 0 8px 8px; background: var(--surface); }
+.highlight-box { border-radius: 10px; padding: 14px 18px; margin: 12px 0; }
+.highlight-box.blue { background: rgba(56,189,248,0.08); border: 1px solid rgba(56,189,248,0.3); }
+.highlight-box.orange { background: rgba(251,146,60,0.08); border: 1px solid rgba(251,146,60,0.3); }
+.highlight-box.green { background: rgba(74,222,128,0.08); border: 1px solid rgba(74,222,128,0.3); }
+.highlight-box.purple { background: rgba(167,139,250,0.08); border: 1px solid rgba(167,139,250,0.3); }
+.chevron { transition: transform 0.2s; display: inline-block; margin-left: auto; }
+.chevron.open { transform: rotate(180deg); }
+ul { padding-left: 20px; margin: 8px 0; }
+li { margin-bottom: 6px; color: var(--muted); }
+li strong { color: var(--text); }
+.exam-question { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 14px 18px; margin-bottom: 10px; }
+.exam-question .q-num { font-size: 0.75rem; font-weight: 700; color: var(--accent); margin-bottom: 6px; }
+.exam-question .q-text { font-weight: 500; }
+.exam-question .q-answer { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); color: var(--muted); font-size: 0.88em; display: none; }
+.exam-question.show-ans .q-answer { display: block; }
+.show-all-btn { background: var(--surface2); border: 1px solid var(--border2); color: var(--accent); padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; margin-bottom: 14px; }
+.show-all-btn:hover { background: var(--surface3); }
 </style>
 </head>
 <body>
-
 <header>
-  <h1>📚 Plano de Estudo — Época Especial</h1>
-  <div class="exam-pills">
-    <span class="pill tm">📄 Text Mining 26/06</span>
-    <span class="pill ast">📈 Séries Temporais 07/07</span>
-    <span class="pill mb">🎲 Bayes 10/07</span>
+  <h1>📚 Mestrado — Época Especial 2026</h1>
+  <div class="pills">
+    <span class="pill tm">🔴 Text Mining</span>
+    <span class="pill ast">🟡 Séries Temporais</span>
+    <span class="pill mb">🟢 Modelação Bayesiana</span>
   </div>
 </header>
-
-<div class="main">
-
-  <div class="tabs">
-    <button class="tab active" onclick="showSection('plano', this)">📅 Plano Diário</button>
-    <button class="tab" onclick="showSection('professor', this)">🎓 Professor</button>
-    <button class="tab" onclick="showSection('progresso', this)">📊 Progresso</button>
+<div class="container">
+<div class="tabs" id="mainTabs">
+  <button class="tab active" onclick="showSection('overview')">🏠 Visão Geral</button>
+  <button class="tab tm" onclick="showSection('tm')">🔴 Text Mining</button>
+  <button class="tab ast" onclick="showSection('ast')">🟡 Séries Temporais</button>
+  <button class="tab mb" onclick="showSection('mb')">🟢 Bayesiana</button>
+  <button class="tab" onclick="showSection('exames')">📝 Exames</button>
+  <button class="tab" onclick="showSection('flashcards')">🃏 Flashcards</button>
+</div>
+<!-- OVERVIEW SECTION -->
+<div id="overview" class="section active">
+  <h2>🎯 Plano de Estudo — Época Especial</h2>
+  <div class="highlight-box blue">
+    <strong>⚠️ Atenção:</strong> Este é um exame de mestrado. O nível exigido é alto: demonstração de compreensão profunda, não apenas memorização de definições.
   </div>
-
-  <!-- PLANO DIÁRIO -->
-  <div class="section active" id="plano">
-    <div class="today-banner">
-      <strong>Hoje é 15 de Junho (Segunda)</strong> — Primeiro dia de estudo! Começa com Text Mining, que é a prova mais próxima (26/06). 💪
+  <div class="grid3" style="margin-top:20px">
+    <div class="box tm-box">
+      <h4 style="color:var(--tm)">🔴 Text Mining</h4>
+      <p style="font-size:0.85rem;color:var(--muted)">Classificação, Sentiment Analysis, Preprocessing, TF-IDF, Word Embeddings, Transformers, LLMs</p>
+      <div class="progress-bar"><div class="progress-fill" style="width:0%;background:var(--tm)"></div></div>
     </div>
-    <div id="days-container"></div>
-  </div>
-
-  <!-- PROFESSOR -->
-  <div class="section" id="professor">
-    <div class="subject-tabs">
-      <button class="subject-btn active-tm" onclick="showSubject('tm', this)">📄 Text Mining</button>
-      <button class="subject-btn" onclick="showSubject('ast', this)">📈 Séries Temporais</button>
-      <button class="subject-btn" onclick="showSubject('mb', this)">🎲 Modelação Bayesiana</button>
+    <div class="box ast-box">
+      <h4 style="color:var(--ast)">🟡 Séries Temporais</h4>
+      <p style="font-size:0.85rem;color:var(--muted)">Componentes, Estacionaridade, ACF/PACF, ARIMA, SARIMA, Holt-Winters, Métricas</p>
+      <div class="progress-bar"><div class="progress-fill" style="width:0%;background:var(--ast)"></div></div>
     </div>
-    <div id="content-tm" class="subject-content"></div>
-    <div id="content-ast" class="subject-content" style="display:none"></div>
-    <div id="content-mb" class="subject-content" style="display:none"></div>
+    <div class="box mb-box">
+      <h4 style="color:var(--mb)">🟢 Modelação Bayesiana</h4>
+      <p style="font-size:0.85rem;color:var(--muted)">Bayes, Prior/Posterior, MCMC, Modelos Conjugados, Inferência, vs Frequentista</p>
+      <div class="progress-bar"><div class="progress-fill" style="width:0%;background:var(--mb)"></div></div>
+    </div>
   </div>
 
-  <!-- PROGRESSO -->
-  <div class="section" id="progresso">
-    <div class="progress-grid">
-      <div class="stat-card">
-        <div class="stat-num" id="stat-done" style="color:var(--done)">0</div>
-        <div class="stat-label">dias completos</div>
+  <h3>📋 Mapa de Tópicos Críticos</h3>
+  <div class="card">
+    <h4>Text Mining — Prioridade Alta para Exame</h4>
+    <table>
+      <tr><th>Tópico</th><th>Conceito Central</th><th>Risco de Cair</th></tr>
+      <tr><td>TF-IDF</td><td>Cálculo passo-a-passo, intuição</td><td>🔴 Muito Alto</td></tr>
+      <tr><td>Naive Bayes</td><td>Probabilidade condicional, independência</td><td>🔴 Muito Alto</td></tr>
+      <tr><td>Sentiment Analysis</td><td>Níveis de análise, lexicons, negação</td><td>🔴 Alto</td></tr>
+      <tr><td>Word2Vec</td><td>CBOW vs Skip-gram, rei-homem+mulher=rainha</td><td>🟠 Alto</td></tr>
+      <tr><td>Transformers</td><td>Self-attention, encoder/decoder</td><td>🟠 Alto</td></tr>
+      <tr><td>Text Classification</td><td>Supervised learning, overfitting</td><td>🟡 Médio</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h4>Séries Temporais — Prioridade Alta para Exame</h4>
+    <table>
+      <tr><th>Tópico</th><th>Conceito Central</th><th>Risco de Cair</th></tr>
+      <tr><td>Estacionaridade</td><td>ADF test, diferenciação</td><td>🔴 Muito Alto</td></tr>
+      <tr><td>ACF/PACF</td><td>Identificar p e q para ARIMA</td><td>🔴 Muito Alto</td></tr>
+      <tr><td>ARIMA(p,d,q)</td><td>Significado dos parâmetros, seleção</td><td>🔴 Alto</td></tr>
+      <tr><td>Holt-Winters</td><td>Tripla exponencial, sazonalidade</td><td>🟠 Alto</td></tr>
+      <tr><td>MAE/RMSE/MAPE</td><td>Diferenças, quando usar cada</td><td>🟡 Médio</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h4>Modelação Bayesiana — Prioridade Alta para Exame</h4>
+    <table>
+      <tr><th>Tópico</th><th>Conceito Central</th><th>Risco de Cair</th></tr>
+      <tr><td>Teorema de Bayes</td><td>Derivação, fórmula completa</td><td>🔴 Muito Alto</td></tr>
+      <tr><td>Prior/Posterior</td><td>Beta-Binomial, Normal-Normal</td><td>🔴 Alto</td></tr>
+      <tr><td>MCMC</td><td>Metropolis-Hastings, intuição</td><td>🟠 Alto</td></tr>
+      <tr><td>MAP vs MLE</td><td>Diferença filosófica e prática</td><td>🟠 Alto</td></tr>
+      <tr><td>Freq vs Bayesiano</td><td>Interpretação de probabilidade</td><td>🟡 Médio</td></tr>
+    </table>
+  </div>
+</div>
+<!-- TEXT MINING SECTION -->
+<div id="tm" class="section">
+  <h2 style="color:var(--tm)">🔴 Text Mining</h2>
+
+  <!-- 1. TEXT CLASSIFICATION -->
+  <div class="card">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="badge tm">1</span>
+      <h3>Text Classification — Classificação de Texto</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="collapsible-content">
+      <div class="highlight-box blue">
+        <strong>Intuição:</strong> Dado um documento (texto), queremos dizer automaticamente a que categoria pertence. Ex: spam/não-spam, positivo/negativo, tema do artigo.
       </div>
-      <div class="stat-card">
-        <div class="stat-num" id="stat-left" style="color:var(--accent)">25</div>
-        <div class="stat-label">dias restantes</div>
+      <h4>Definição Formal</h4>
+      <p>Dado um espaço de documentos <code>X</code> e um conjunto de classes <code>C = {c₁, c₂, ..., cₙ}</code>, uma função de classificação é: <strong>f: X → C</strong></p>
+      <p>O objetivo é aprender esta função a partir de exemplos (treino) e aplicá-la a novos documentos.</p>
+
+      <h4>Pipeline de Aprendizagem Supervisionada</h4>
+      <div class="grid2">
+        <div class="box info-box">
+          <h4>Training Set (Treino)</h4>
+          <p>Conjunto de documentos com labels conhecidas. O modelo <em>aprende</em> padrões a partir destes exemplos. Quanto maior e mais diverso, melhor a generalização.</p>
+        </div>
+        <div class="box warn-box">
+          <h4>Test Set (Teste)</h4>
+          <p>Conjunto <em>separado</em> de documentos não vistos durante o treino. Serve para avaliar a performance real do modelo. <strong>Nunca use o test set para tomar decisões de modelação!</strong></p>
+        </div>
       </div>
-      <div class="stat-card">
-        <div class="stat-num" id="stat-pct" style="color:var(--ast)">0%</div>
-        <div class="stat-label">concluído</div>
+
+      <h4>Overfitting vs Underfitting</h4>
+      <div class="grid2">
+        <div class="box tm-box">
+          <h4>Overfitting (Sobre-ajuste)</h4>
+          <p>O modelo "decorou" o treino mas não generaliza. Alta accuracy no treino, baixa no teste.</p>
+          <p><strong>Causas:</strong> Modelo muito complexo, poucos dados, sem regularização</p>
+          <p><strong>Sinal:</strong> Train acc ≈ 99%, Test acc ≈ 60%</p>
+        </div>
+        <div class="box ast-box">
+          <h4>Underfitting (Sub-ajuste)</h4>
+          <p>O modelo é simples demais para capturar padrões. Baixa accuracy tanto no treino como no teste.</p>
+          <p><strong>Causas:</strong> Modelo muito simples, features insuficientes</p>
+          <p><strong>Sinal:</strong> Train acc ≈ 60%, Test acc ≈ 58%</p>
+        </div>
       </div>
-    </div>
-    <div class="progress-bar-wrap">
-      <div class="pbar-label"><span>📄 Text Mining</span><span id="pct-tm">0%</span></div>
-      <div class="pbar"><div class="pbar-fill" id="bar-tm" style="width:0%;background:var(--tm)"></div></div>
-    </div>
-    <div class="progress-bar-wrap">
-      <div class="pbar-label"><span>📈 Séries Temporais</span><span id="pct-ast">0%</span></div>
-      <div class="pbar"><div class="pbar-fill" id="bar-ast" style="width:0%;background:var(--ast)"></div></div>
-    </div>
-    <div class="progress-bar-wrap">
-      <div class="pbar-label"><span>🎲 Modelação Bayesiana</span><span id="pct-mb">0%</span></div>
-      <div class="pbar"><div class="pbar-fill" id="bar-mb" style="width:0%;background:var(--mb)"></div></div>
+
+      <h4>Algoritmos de Classificação</h4>
+      <table>
+        <tr><th>Algoritmo</th><th>Ideia Base</th><th>Vantagens</th><th>Desvantagens</th><th>Quando Usar</th></tr>
+        <tr><td><strong>Naive Bayes</strong></td><td>P(classe|doc) ∝ P(doc|classe)·P(classe)</td><td>Rápido, funciona com poucos dados, baseline forte</td><td>Assume independência entre palavras (ingénuo)</td><td>Classificação de emails, primeiro modelo a testar</td></tr>
+        <tr><td><strong>Logistic Regression</strong></td><td>Aprende pesos para features, sigmoid para probabilidade</td><td>Interpretável, probabilístico, regularização fácil</td><td>Linear, precisa de mais dados</td><td>Baseline sólido, features esparsas como TF-IDF</td></tr>
+        <tr><td><strong>SVM</strong></td><td>Hiperplano que maximiza margem entre classes</td><td>Funciona bem em espaços de alta dimensão, robusto</td><td>Lento em grandes datasets, difícil de interpretar</td><td>Texto (alta dimensionalidade), datasets médios</td></tr>
+        <tr><td><strong>Decision Trees</strong></td><td>Divisões hierárquicas por features</td><td>Interpretável, sem normalização</td><td>Overfitting fácil, instável</td><td>Quando interpretabilidade é crucial</td></tr>
+        <tr><td><strong>kNN</strong></td><td>Classifica pelo k vizinhos mais próximos</td><td>Simples, sem treino</td><td>Lento na predição, k sensível, espaço de alta dim.</td><td>Datasets pequenos, baseline de similaridade</td></tr>
+      </table>
+
+      <h4>Como Naive Bayes Funciona (Detalhe)</h4>
+      <p>Usando o Teorema de Bayes: <code>P(c|d) = P(d|c) · P(c) / P(d)</code></p>
+      <p>Assumindo independência condicional das palavras (assumption "ingénua"):</p>
+      <div class="formula">P(c|d) ∝ P(c) · ∏ P(wᵢ|c)  para cada palavra wᵢ no documento d</div>
+      <p><strong>Na prática usa-se log-probabilidades</strong> para evitar underflow numérico:</p>
+      <div class="formula">log P(c|d) ∝ log P(c) + Σ log P(wᵢ|c)</div>
+      <p><strong>Laplace Smoothing:</strong> Para palavras não vistas no treino, usa-se <code>P(w|c) = (count(w,c) + 1) / (count(c) + |V|)</code> onde |V| é o tamanho do vocabulário.</p>
+
+      <details><summary>Erro Comum no Exame</summary>
+        <div>
+          <p>❌ "Naive Bayes é melhor que SVM porque considera probabilidades"</p>
+          <p>✅ A qualidade depende do dataset. A "ingenuidade" da independência de palavras é uma limitação forte — "não gosto" quebra essa independência. SVM geralmente supera NB em textos longos.</p>
+        </div>
+      </details>
     </div>
   </div>
 
+  <!-- 2. TEXT PREPROCESSING -->
+  <div class="card">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="badge tm">2</span>
+      <h3>Text Preprocessing — Pré-processamento</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="collapsible-content">
+      <div class="highlight-box blue">
+        <strong>Intuição:</strong> Texto bruto é "sujo". Antes de qualquer análise, precisamos normalizar e estruturar o texto. Garbage in → Garbage out.
+      </div>
+      <table>
+        <tr><th>Técnica</th><th>O Que Faz</th><th>Exemplo</th><th>Notas</th></tr>
+        <tr><td><strong>Tokenization</strong></td><td>Divide texto em unidades (tokens)</td><td>"Bom dia!" → ["Bom", "dia", "!"]</td><td>Pode ser por palavra, subpalavra, caractere</td></tr>
+        <tr><td><strong>Sentence Segmentation</strong></td><td>Identifica fronteiras de frases</td><td>"Dr. Smith chegou. Ele sorriu." → 2 frases</td><td>Difícil com abreviações ("Dr.", "etc.")</td></tr>
+        <tr><td><strong>Normalization</strong></td><td>Padroniza formato</td><td>"USA", "U.S.A." → "usa"</td><td>Lowercase, remover acentos, expandir contrações</td></tr>
+        <tr><td><strong>Stopwords</strong></td><td>Remove palavras muito frequentes sem significado</td><td>"o", "a", "de", "que" → removidos</td><td>⚠️ Cuidado: pode remover "não" em sentiment!</td></tr>
+        <tr><td><strong>Stemming</strong></td><td>Reduz à raiz por regras (agressivo)</td><td>"running", "runs" → "run", "comer" → "com"</td><td>Pode gerar raízes não-palavras. Rápido.</td></tr>
+        <tr><td><strong>Lemmatization</strong></td><td>Reduz à forma canônica (dicionário)</td><td>"melhores" → "bom", "am/is/are" → "be"</td><td>Semanticamente correto. Mais lento que stemming.</td></tr>
+      </table>
+
+      <h4>Stemming vs Lemmatization — Diferença Crucial</h4>
+      <div class="grid2">
+        <div class="box">
+          <h4>Stemming (Porter Stemmer)</h4>
+          <pre>
+"studies"  → "studi"
+"studying" → "studi"
+"studied"  → "studi"
+<span class="c">// Regras heurísticas, não dict</span>
+<span class="c">// Resultado pode não ser palavra real</span>
+          </pre>
+        </div>
+        <div class="box">
+          <h4>Lemmatization</h4>
+          <pre>
+"studies"  → "study"
+"studying" → "study"
+"better"   → "good"
+<span class="c">// Usa dicionário morfológico</span>
+<span class="c">// Resultado é sempre palavra real</span>
+          </pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. FEATURE EXTRACTION TF-IDF -->
+  <div class="card">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="badge tm">3</span>
+      <h3>Feature Extraction — Bag of Words, N-Grams, TF-IDF</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="collapsible-content">
+      <div class="highlight-box blue">
+        <strong>Intuição:</strong> Máquinas não entendem texto. Precisamos converter palavras em números. TF-IDF é a técnica clássica mais importante para exame.
+      </div>
+
+      <h4>Bag of Words (BoW)</h4>
+      <p>Representa um documento como um vetor de contagens de palavras. Ignora a ordem. Exemplo:</p>
+      <div class="grid2">
+        <div class="box">
+          <p>Doc1: "o gato comeu o rato"</p>
+          <p>Doc2: "o rato fugiu"</p>
+        </div>
+        <div class="box">
+          <table>
+            <tr><th></th><th>o</th><th>gato</th><th>comeu</th><th>rato</th><th>fugiu</th></tr>
+            <tr><td>Doc1</td><td>2</td><td>1</td><td>1</td><td>1</td><td>0</td></tr>
+            <tr><td>Doc2</td><td>1</td><td>0</td><td>0</td><td>1</td><td>1</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <h4>N-Grams</h4>
+      <p>Sequências de N palavras consecutivas. Capturam contexto parcial:</p>
+      <pre>"text mining is fun"
+Unigrams  (N=1): ["text", "mining", "is", "fun"]
+Bigrams   (N=2): ["text mining", "mining is", "is fun"]
+Trigrams  (N=3): ["text mining is", "mining is fun"]</pre>
+      <p><strong>Vantagem:</strong> Capta frases como "not good" (bigrama) vs apenas "not" e "good" separados.</p>
+
+      <h4>TF-IDF — Cálculo Passo a Passo (MUITO IMPORTANTE)</h4>
+      <div class="highlight-box orange">
+        <strong>⚠️ Isto SEMPRE cai no exame!</strong> Saiba calcular TF-IDF manualmente.
+      </div>
+      <p><strong>TF (Term Frequency):</strong> Frequência do termo no documento</p>
+      <div class="formula">TF(t, d) = count(t in d) / total_words(d)</div>
+      <p><strong>IDF (Inverse Document Frequency):</strong> Penaliza termos que aparecem em muitos documentos</p>
+      <div class="formula">IDF(t, D) = log( N / df(t) )&nbsp;&nbsp; onde N = nº docs, df(t) = nº docs com o termo t</div>
+      <p><strong>TF-IDF:</strong></p>
+      <div class="formula">TF-IDF(t, d, D) = TF(t, d) × IDF(t, D)</div>
+
+      <h4>Exemplo Completo de Cálculo</h4>
+      <p>3 documentos:</p>
+      <div class="box">
+        <p>D1: "o gato comeu o rato" (5 palavras)</p>
+        <p>D2: "o rato fugiu rápido" (4 palavras)</p>
+        <p>D3: "o gato é rápido" (4 palavras)</p>
+      </div>
+      <p><strong>Calcular TF-IDF da palavra "gato":</strong></p>
+      <table>
+        <tr><th>Passo</th><th>Cálculo</th><th>Resultado</th></tr>
+        <tr><td>TF(gato, D1)</td><td>1 / 5</td><td>0.20</td></tr>
+        <tr><td>TF(gato, D2)</td><td>0 / 4</td><td>0.00</td></tr>
+        <tr><td>TF(gato, D3)</td><td>1 / 4</td><td>0.25</td></tr>
+        <tr><td>df(gato)</td><td>aparece em D1 e D3 = 2 documentos</td><td>2</td></tr>
+        <tr><td>IDF(gato)</td><td>log(3 / 2) = log(1.5)</td><td>≈ 0.176</td></tr>
+        <tr><td>TF-IDF(gato, D1)</td><td>0.20 × 0.176</td><td>≈ 0.035</td></tr>
+        <tr><td>TF-IDF(gato, D2)</td><td>0.00 × 0.176</td><td>= 0.000</td></tr>
+        <tr><td>TF-IDF(gato, D3)</td><td>0.25 × 0.176</td><td>≈ 0.044</td></tr>
+      </table>
+      <p><strong>Calcular TF-IDF da palavra "o" (stopword típica):</strong></p>
+      <table>
+        <tr><th>Passo</th><th>Cálculo</th><th>Resultado</th></tr>
+        <tr><td>df("o")</td><td>aparece em D1, D2 e D3 = 3 docs</td><td>3</td></tr>
+        <tr><td>IDF("o")</td><td>log(3 / 3) = log(1)</td><td>= 0</td></tr>
+        <tr><td>TF-IDF("o", qualquer doc)</td><td>TF × 0</td><td>= 0</td></tr>
+      </table>
+      <div class="highlight-box green">
+        <strong>Insight crucial:</strong> TF-IDF automaticamente dá peso 0 a palavras que aparecem em todos os documentos (como stopwords). Palavras raras e específicas recebem peso alto.
+      </div>
+
+      <h4>Cosine Similarity — Medida de Similaridade</h4>
+      <div class="formula">cos(A, B) = (A · B) / (||A|| × ||B||)</div>
+      <p>Mede o ângulo entre dois vetores TF-IDF. Valor entre 0 (totalmente diferentes) e 1 (idênticos).</p>
+      <p><strong>Porquê cosine e não distância euclidiana?</strong> A distância euclidiana é afetada pelo comprimento do documento. Documentos longos teriam sempre maior distância. Cosine normaliza pelo comprimento, sendo mais justo.</p>
+    </div>
+  </div>
+
+  <!-- 4. SENTIMENT ANALYSIS -->
+  <div class="card">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="badge tm">4</span>
+      <h3>Sentiment Analysis — Análise de Sentimento</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="collapsible-content">
+      <div class="highlight-box blue">
+        <strong>Intuição:</strong> Extrair opiniões, sentimentos e atitudes de texto. "Este produto é fantástico!" → Positivo. "Péssimo serviço." → Negativo.
+      </div>
+
+      <h4>Hierarquia da Análise de Sentimento</h4>
+      <table>
+        <tr><th>Nível</th><th>Definição</th><th>Exemplo</th></tr>
+        <tr><td><strong>Opinion Mining</strong></td><td>Extrair opiniões sobre entidades/aspectos</td><td>"A câmara do iPhone é boa, mas a bateria é fraca"</td></tr>
+        <tr><td><strong>Subjectivity Analysis</strong></td><td>Distinguir texto subjetivo de objetivo</td><td>Objetivo: "O iPhone pesa 174g" / Subjetivo: "O iPhone é elegante"</td></tr>
+        <tr><td><strong>Sentiment Mining</strong></td><td>Polarity + intensidade</td><td>Positivo (0.8), Negativo (0.2), Neutro (0.0)</td></tr>
+      </table>
+
+      <h4>Granularidade de Análise</h4>
+      <div class="grid3">
+        <div class="box">
+          <h4>Documento</h4>
+          <p>Análise de toda a review/texto. Ex: "Esta review é positiva?"</p>
+        </div>
+        <div class="box">
+          <h4>Frase</h4>
+          <p>Cada frase separada. Permite sentimentos mistos no mesmo documento.</p>
+        </div>
+        <div class="box">
+          <h4>Aspeto (ABSA)</h4>
+          <p>Aspeto-Based Sentiment Analysis: "câmara:positivo, bateria:negativo"</p>
+        </div>
+      </div>
+
+      <h4>Sentiment Lexicons</h4>
+      <div class="grid2">
+        <div class="box">
+          <h4>General Inquirer</h4>
+          <p>Dicionário com 11,788 palavras marcadas como positive/negative/neutral. Desenvolvido em Harvard. Abordagem manual — linguistas categorizaram cada palavra.</p>
+          <p><strong>Limitação:</strong> Não captura contexto. "banco" pode ser financeiro ou de jardim.</p>
+        </div>
+        <div class="box">
+          <h4>LIWC (Linguistic Inquiry and Word Count)</h4>
+          <p>Analisa dimensões psicológicas e linguísticas: emoções, cognição, processos sociais. Conta % de palavras em cada categoria.</p>
+          <p><strong>Limitação:</strong> Foco em psicologia, não sempre adequado para reviews comerciais.</p>
+        </div>
+      </div>
+
+      <h4>Negation Handling — Tratamento de Negação</h4>
+      <div class="highlight-box orange">
+        <strong>Problema crítico:</strong> "Este filme é <em>bom</em>" vs "Este filme <em>não</em> é <em>bom</em>". Sem tratamento, ambos ativariam o token positivo "bom"!
+      </div>
+      <p><strong>Estratégia NOT-prefix:</strong> Após um "não/not", prefixar as próximas N palavras com "NOT_":</p>
+      <pre>"não gosto disto" → "não NOT_gosto NOT_disto"</pre>
+      <p><strong>Problemas linguísticos:</strong></p>
+      <ul>
+        <li>Scope ambíguo: "Não gosto de filmes de ação ou comédia" — negação aplica a ambos?</li>
+        <li>Dupla negação: "Não é mau" → Positivo!</li>
+        <li>Negação longa-distância: "O que eu não esperava era gostar tanto"</li>
+        <li>Ironias e sarcasmo: "Claro que adorei esperar 2 horas" → Negativo</li>
+      </ul>
+
+      <h4>Aplicações por Domínio</h4>
+      <table>
+        <tr><th>Domínio</th><th>Aplicação</th><th>Desafio Específico</th></tr>
+        <tr><td>Amazon/E-commerce</td><td>Análise de reviews de produtos</td><td>Reviews falsas, linguagem técnica por domínio</td></tr>
+        <tr><td>Netflix/Cinema</td><td>Qualidade de conteúdo percebida</td><td>Gíria, referências culturais</td></tr>
+        <tr><td>Política</td><td>Opinião pública, tracking de partidos</td><td>Ironia, linguagem eufemística</td></tr>
+        <tr><td>Turismo</td><td>Análise de reviews de hotéis/destinos</td><td>Multi-aspeto: localização, limpeza, staff</td></tr>
+        <tr><td>Finanças</td><td>Sentiment de notícias vs preço de ações</td><td>Vocabulário técnico específico</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- 5. TOPIC MODELLING -->
+  <div class="card">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="badge tm">5</span>
+      <h3>Topic Modelling — LDA</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="collapsible-content">
+      <div class="highlight-box blue">
+        <strong>Intuição:</strong> Sem labels. Queremos descobrir automaticamente os "temas" escondidos numa coleção de documentos. Unsupervised.
+      </div>
+      <h4>LDA — Latent Dirichlet Allocation</h4>
+      <p><strong>Pressupostos do modelo:</strong></p>
+      <ul>
+        <li>Cada documento é uma <strong>mistura de tópicos</strong>: "40% política, 30% economia, 30% desporto"</li>
+        <li>Cada tópico é uma <strong>distribuição sobre palavras</strong>: tópico "desporto" tem alta prob. para "gol", "jogo", "equipa"</li>
+        <li>Cada palavra no documento foi gerada: escolher tópico → escolher palavra desse tópico</li>
+      </ul>
+      <h4>Intuição Matemática do LDA</h4>
+      <p>O modelo generativo assume que os documentos foram criados assim:</p>
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">Para cada documento d, amostrar distribuição de tópicos θ_d ~ Dirichlet(α)</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">Para cada tópico k, amostrar distribuição de palavras β_k ~ Dirichlet(η)</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">Para cada palavra na posição n do documento: escolher tópico z_n ~ Multinomial(θ_d); gerar palavra w_n ~ Multinomial(β_{z_n})</div>
+      </div>
+      <p><strong>O que LDA estima:</strong> θ (distribuição de tópicos por documento) e β (distribuição de palavras por tópico) a partir das palavras observadas.</p>
+      <p><strong>Parâmetros:</strong> K (número de tópicos — você escolhe), α (concentração prior dos tópicos), η (concentração prior das palavras)</p>
+    </div>
+  </div>
+
+  <!-- 6. WORD EMBEDDINGS -->
+  <div class="card">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="badge tm">6</span>
+      <h3>Word Embeddings — Word2Vec, GloVe, FastText</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="collapsible-content">
+      <div class="highlight-box blue">
+        <strong>Intuição:</strong> TF-IDF trata palavras como símbolos independentes. Word embeddings representam palavras como vetores densos onde palavras <em>similares</em> ficam próximas no espaço.
+      </div>
+      <h4>Representação Vetorial</h4>
+      <p>Cada palavra é mapeada para um vetor de dimensão d (tipicamente 100-300). Palavras semanticamente similares têm vetores similares.</p>
+      <div class="formula">rei  → [0.7,  0.2, -0.1, ..., 0.4]
+rainha → [0.6,  0.3, -0.1, ..., 0.5]
+homem → [0.5, -0.1,  0.8, ..., 0.1]
+mulher → [0.4, -0.1,  0.7, ..., 0.2]</div>
+
+      <h4>Word2Vec — Dois Modelos</h4>
+      <div class="grid2">
+        <div class="box info-box">
+          <h4>CBOW (Continuous Bag of Words)</h4>
+          <p>Contexto → Palavra central</p>
+          <p>"O ___ salta sobre a lua" → prediz "gato"</p>
+          <p>Janela de contexto (ex: 5 palavras à volta)</p>
+          <p><strong>Treina mais rápido, melhor para vocabulários frequentes</strong></p>
+        </div>
+        <div class="box acc-box">
+          <h4>Skip-gram</h4>
+          <p>Palavra central → Contexto</p>
+          <p>"gato" → prediz ["O", "salta", "sobre"]</p>
+          <p>Aprende relações mais ricas</p>
+          <p><strong>Melhor para palavras raras e grandes corpora</strong></p>
+        </div>
+      </div>
+
+      <h4>O Famoso Exemplo: Rei - Homem + Mulher = Rainha</h4>
+      <div class="highlight-box purple">
+        <strong>vec("rei") - vec("homem") + vec("mulher") ≈ vec("rainha")</strong>
+      </div>
+      <p><strong>Porquê isto acontece?</strong></p>
+      <p>Word2Vec aprende a partir de padrões de co-ocorrência. "Rei" e "rainha" aparecem em contextos similares (palácio, coroa, reino). "Homem" e "mulher" aparecem em contextos genéricos com o mesmo padrão de diferença de género.</p>
+      <p>O vetor <code>vec("rei") - vec("homem")</code> captura a dimensão "realeza". Adicionando <code>vec("mulher")</code> desloca para o equivalente feminino, que se aproxima de <code>vec("rainha")</code>.</p>
+      <p>Outros exemplos: Paris - França + Itália ≈ Roma; médico - homem + mulher ≈ enfermeira</p>
+
+      <h4>Comparação GloVe vs Word2Vec vs FastText</h4>
+      <table>
+        <tr><th>Modelo</th><th>Abordagem</th><th>Vantagens</th><th>Desvantagem</th></tr>
+        <tr><td><strong>Word2Vec</strong></td><td>Predição local (janela)</td><td>Rápido, analogias, semântica</td><td>OOV problem, sem morfologia</td></tr>
+        <tr><td><strong>GloVe</strong></td><td>Fatorização de co-ocorrência global</td><td>Captura estatísticas globais do corpus, bom em analogias</td><td>OOV problem, mais lento</td></tr>
+        <tr><td><strong>FastText</strong></td><td>Subwords (n-gramas de caracteres)</td><td>Lida com OOV e palavras morfologicamente ricas. Excelente para Português!</td><td>Vetores maiores</td></tr>
+      </table>
+      <p><strong>OOV = Out Of Vocabulary:</strong> Palavras não vistas durante o treino. FastText resolve isto usando subwords — mesmo sem ver "incompreensibilidade", consegue estimá-la via "compreen", "sivel", etc.</p>
+    </div>
+  </div>
+
+  <!-- 7. TRANSFORMERS -->
+  <div class="card">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="badge tm">7</span>
+      <h3>Transformers & LLMs</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="collapsible-content">
+      <div class="highlight-box blue">
+        <strong>Paper fundamental:</strong> "Attention Is All You Need" (Vaswani et al., 2017). Revolucionou NLP ao eliminar RNNs e usar apenas mecanismos de atenção.
+      </div>
+
+      <h4>Motivação</h4>
+      <p>RNNs processam sequências palavra-a-palavra, criando "gargalo" de informação. Long-range dependencies são difíceis. Transformers processam toda a sequência em paralelo.</p>
+
+      <h4>Arquitetura Transformer</h4>
+      <div class="grid2">
+        <div class="box info-box">
+          <h4>Encoder</h4>
+          <ul>
+            <li>Processa a sequência de input</li>
+            <li>Produz representação contextualizada</li>
+            <li>Cada palavra "vê" toda a frase</li>
+            <li>Usado em: BERT, classificação, tradução (source)</li>
+          </ul>
+        </div>
+        <div class="box acc-box">
+          <h4>Decoder</h4>
+          <ul>
+            <li>Gera output token por token</li>
+            <li>Masked self-attention (não vê o futuro)</li>
+            <li>Cross-attention com encoder</li>
+            <li>Usado em: GPT, geração de texto</li>
+          </ul>
+        </div>
+      </div>
+
+      <h4>Self-Attention — O Coração do Transformer</h4>
+      <p>Para cada palavra, calcula três vetores: <strong>Query (Q)</strong>, <strong>Key (K)</strong>, <strong>Value (V)</strong></p>
+      <div class="formula">Attention(Q, K, V) = softmax( QKᵀ / √d_k ) · V</div>
+      <p><strong>Intuição:</strong></p>
+      <ul>
+        <li>Q: "O que esta palavra está a procurar?"</li>
+        <li>K: "O que esta palavra oferece para outros?"</li>
+        <li>V: "Que informação esta palavra contribui?"</li>
+        <li>√d_k: Fator de escala para estabilizar gradientes</li>
+      </ul>
+      <p><strong>Exemplo:</strong> Em "O banco do jardim estava molhado", a palavra "banco" usa atenção para perceber o contexto: alta atenção a "jardim" → banco=assento, não banco financeiro.</p>
+
+      <h4>Multi-Head Attention</h4>
+      <p>Em vez de uma atenção, usa-se h atenções em paralelo. Cada "cabeça" aprende um tipo diferente de relação (sintáctica, semântica, co-referência...)</p>
+      <div class="formula">MultiHead(Q,K,V) = Concat(head₁, ..., headₕ) · Wᴼ</div>
+
+      <h4>Large Language Models</h4>
+      <table>
+        <tr><th>Modelo</th><th>Organização</th><th>Arquitetura</th><th>Inovação</th></tr>
+        <tr><td><strong>GPT</strong></td><td>OpenAI</td><td>Decoder-only</td><td>Pre-training + fine-tuning; RLHF; escala</td></tr>
+        <tr><td><strong>Claude</strong></td><td>Anthropic</td><td>Decoder-only</td><td>Constitutional AI, alinhamento, safety</td></tr>
+        <tr><td><strong>Gemini</strong></td><td>Google</td><td>Multimodal Transformer</td><td>Nativo multimodal (texto+imagem+áudio)</td></tr>
+        <tr><td><strong>BERT</strong></td><td>Google</td><td>Encoder-only</td><td>Bidirectional, masked language modeling</td></tr>
+      </table>
+      <p><strong>Como derivam dos Transformers:</strong> LLMs são Transformers treinados em enormes quantidades de texto. Emergem capacidades como raciocínio, few-shot learning, e seguir instruções — sem serem explicitamente programadas.</p>
+    </div>
+  </div>
+</div>
+<!-- SERIES TEMPORAIS SECTION -->
+<div id="ast" class="section">
+  <h2 style="color:var(--ast)">🟡 Séries Temporais</h2>
+
+  <!-- Componentes -->
+  <div class="card">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="badge ast">1</span>
+      <h3>Componentes de uma Série Temporal</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="collapsible-content">
+      <div class="highlight-box blue">
+        <strong>Intuição:</strong> Uma série temporal é a sobreposição de vários padrões. Decompor = separar esses padrões para analisá-los individualmente.
+      </div>
+      <h4>As 4 Componentes</h4>
+      <table>
+        <tr><th>Componente</th><th>Definição</th><th>Exemplo Real</th><th>Como Detectar</th></tr>
+        <tr><td><strong>Tendência (Trend)</strong></td><td>Movimento de longo prazo para cima ou baixo (ou estável)</td><td>Crescimento das vendas de EVs 2015-2025</td><td>Média móvel de longo prazo, regressão linear</td></tr>
+        <tr><td><strong>Sazonalidade</strong></td><td>Padrão periódico fixo e conhecido (mensal, semanal, anual)</td><td>Vendas de sorvete altas no verão; vendas de natal em dezembro</td><td>ACF com picos em múltiplos do período</td></tr>
+        <tr><td><strong>Ciclo</strong></td><td>Flutuações de longo prazo de duração variável (≠ sazonalidade)</td><td>Ciclos económicos de expansão/recessão (3-10 anos)</td><td>Periodicidade irregular, difícil de separar da tendência</td></tr>
+        <tr><td><strong>Ruído (Irregular)</strong></td><td>Variação aleatória inexplicável pelos outros componentes</td><td>Spike pontual por evento inesperado (pandemia, guerra)</td><td>O que sobra após remover T+S+C</td></tr>
+      </table>
+
+      <h4>Modelo Aditivo vs Multiplicativo</h4>
+      <div class="grid2">
+        <div class="box">
+          <h4>Aditivo: Y = T + S + C + ε</h4>
+          <p>A variância sazonal é <strong>constante</strong> independentemente do nível da série.</p>
+          <p><strong>Quando usar:</strong> Série com amplitude sazonal constante ao longo do tempo</p>
+        </div>
+        <div class="box">
+          <h4>Multiplicativo: Y = T × S × C × ε</h4>
+          <p>A variância sazonal <strong>cresce com o nível</strong> da série.</p>
+          <p><strong>Quando usar:</strong> Série cujas flutuações aumentam quando os valores crescem (mais comum em dados económicos)</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Estacionaridade -->
+  <div class="card">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="badge ast">2</span>
+      <h3>Estacionaridade — Conceito Fundamental</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="collapsible-content">
+      <div class="highlight-box blue">
+        <strong>Intuição:</strong> Uma série é estacionária se as suas propriedades estatísticas não mudam ao longo do tempo. É como um jogo com regras fixas — você pode aprender essas regras e fazer previsões.
+      </div>
+      <h4>Definição Formal — Estacionaridade Fraca</h4>
+      <p>Uma série Yₜ é fracamente estacionária se:</p>
+      <ol style="padding-left:20px;margin:12px 0">
+        <li style="margin-bottom:8px"><strong>Média constante:</strong> E[Yₜ] = μ para todo t</li>
+        <li style="margin-bottom:8px"><strong>Variância constante (finita):</strong> Var[Yₜ] = σ² para todo t</li>
+        <li style="margin-bottom:8px"><strong>Autocovariância depende só do lag:</strong> Cov(Yₜ, Yₜ₊ₖ) = γ(k) — depende só de k, não de t</li>
+      </ol>
+
+      <h4>Porquê a Estacionaridade é Crucial?</h4>
+      <p>Os modelos ARIMA assumem estacionaridade. Numa série não-estacionária, os parâmetros mudam ao longo do tempo — o modelo do passado não serve para o futuro.</p>
+
+      <h4>Tipos de Não-Estacionaridade e Soluções</h4>
+      <table>
+        <tr><th>Tipo</th><th>Característica</th><th>Solução</th></tr>
+        <tr><td>Tendência determinística</td><td>Média cresce/decresce sistematicamente</td><td>Remover tendência (detrending) ou diferenciar</td></tr>
+        <tr><td>Random Walk</td><td>Yₜ = Yₜ₋₁ + εₜ (unit root)</td><td>1ª diferença: ΔYₜ = Yₜ - Yₜ₋₁</td></tr>
+        <tr><td>Sazonalidade</td><td>Padrão periódico na média</td><td>Diferença sazonal: ΔₛYₜ = Yₜ - Yₜ₋ₛ</td></tr>
+        <tr><td>Variância crescente</td><td>Heterocedasticidade</td><td>Transformação log ou Box-Cox</td></tr>
+      </table>
+
+      <h4>Teste ADF (Augmented Dickey-Fuller)</h4>
+      <p><strong>H₀:</strong> A série tem raiz unitária (não-estacionária)</p>
+      <p><strong>H₁:</strong> A série é estacionária</p>
+      <p>Se p-value &lt; 0.05: Rejeitar H₀ → <strong>série é estacionária</strong></p>
+      <p>Se p-value ≥ 0.05: Não rejeitar H₀ → <strong>série é não-estacionária</strong> → diferenciar e testar de novo</p>
+    </div>
+  </div>
+
+  <!-- ACF PACF -->
+  <div class="card">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="badge ast">3</span>
+      <h3>ACF e PACF — Identificação do Modelo</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="collapsible-content">
+      <div class="highlight-box blue">
+        <strong>Intuição:</strong> ACF e PACF são gráficos de diagnóstico que nos dizem que tipo de modelo (AR ou MA) e quais os parâmetros usar. São o coração do método Box-Jenkins.
+      </div>
+      <h4>ACF (Autocorrelation Function)</h4>
+      <p>Correlação entre Yₜ e Yₜ₋ₖ para cada lag k. Inclui efeitos indiretos (através de lags intermédios).</p>
+      <div class="formula">ρ(k) = Cor(Yₜ, Yₜ₋ₖ) = γ(k) / γ(0)</div>
+
+      <h4>PACF (Partial ACF)</h4>
+      <p>Correlação entre Yₜ e Yₜ₋ₖ <strong>após remover o efeito dos lags intermédios</strong> (lag 1, 2, ..., k-1). Mede o efeito "direto".</p>
+
+      <h4>Guia de Identificação ARIMA(p,d,q)</h4>
+      <div class="box">
+        <table>
+          <tr><th>Modelo</th><th>ACF</th><th>PACF</th></tr>
+          <tr><td><strong>AR(p)</strong></td><td>Decai gradualmente (exponencial ou oscilatório)</td><td><strong>Corta bruscamente após lag p</strong></td></tr>
+          <tr><td><strong>MA(q)</strong></td><td><strong>Corta bruscamente após lag q</strong></td><td>Decai gradualmente</td></tr>
+          <tr><td><strong>ARMA(p,q)</strong></td><td>Decai gradualmente após lag q</td><td>Decai gradualmente após lag p</td></tr>
+          <tr><td><strong>White Noise</strong></td><td>Todos os lags ≈ 0 (dentro das bandas)</td><td>Todos os lags ≈ 0</td></tr>
+        </table>
+      </div>
+      <div class="highlight-box orange">
+        <strong>Regra prática:</strong> Bandas de confiança a ±1.96/√n. Picos fora das bandas são estatisticamente significativos. Se ACF decai e PACF corta em lag 2 → modelo AR(2).
+      </div>
+    </div>
+  </div>
+
+  <!-- ARIMA -->
+  <div class="card">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="badge ast">4</span>
+      <h3>AR, MA, ARMA, ARIMA, SARIMA</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="collapsible-content">
+      <h4>AR(p) — AutoRegressive</h4>
+      <p>Yₜ é regressão linear nos seus próprios valores passados:</p>
+      <div class="formula">Yₜ = c + φ₁Yₜ₋₁ + φ₂Yₜ₋₂ + ... + φₚYₜ₋ₚ + εₜ</div>
+      <p>"Hoje depende dos últimos p dias." Ex: AR(1) — preço de amanhã ≈ φ₁ × preço de hoje + ruído</p>
+
+      <h4>MA(q) — Moving Average</h4>
+      <p>Yₜ é combinação linear dos erros passados:</p>
+      <div class="formula">Yₜ = μ + εₜ + θ₁εₜ₋₁ + θ₂εₜ₋₂ + ... + θᵩεₜ₋ᵩ</div>
+      <p>"Hoje é afetado por choques/erros dos últimos q períodos." MA é sempre estacionário.</p>
+
+      <h4>ARMA(p,q)</h4>
+      <p>Combinação: Yₜ = c + Σφᵢ Yₜ₋ᵢ + εₜ + Σθⱼ εₜ₋ⱼ</p>
+
+      <h4>ARIMA(p, d, q) — Com Integração</h4>
+      <p>Para séries não-estacionárias. Diferencia d vezes antes de aplicar ARMA:</p>
+      <table>
+        <tr><th>Parâmetro</th><th>Significado</th><th>Como Determinar</th></tr>
+        <tr><td><strong>p</strong></td><td>Ordem AR — quantos lags de Y</td><td>PACF: onde corta bruscamente</td></tr>
+        <tr><td><strong>d</strong></td><td>Grau de diferenciação para estacionarizar</td><td>Teste ADF: quantas diferenças até estacionarizar</td></tr>
+        <tr><td><strong>q</strong></td><td>Ordem MA — quantos lags de erro</td><td>ACF: onde corta bruscamente</td></tr>
+      </table>
+      <div class="highlight-box green">
+        <strong>Critérios de Seleção:</strong> AIC (Akaike) e BIC (Bayesian). Menor é melhor. BIC penaliza mais a complexidade → modelos mais parsimoniosos.
+      </div>
+
+      <h4>SARIMA(p,d,q)(P,D,Q)[s] — Com Sazonalidade</h4>
+      <p>Extensão do ARIMA para séries com sazonalidade de período s:</p>
+      <ul>
+        <li>(p,d,q) — componente não-sazonal (como ARIMA normal)</li>
+        <li>(P,D,Q) — componente sazonal (AR, diferenciação, MA sazonais)</li>
+        <li>[s] — período sazonal: s=12 para mensal, s=4 para trimestral, s=7 para diário</li>
+      </ul>
+      <p><strong>Exemplo:</strong> SARIMA(1,1,1)(1,1,1)[12] para dados mensais com sazonalidade anual.</p>
+    </div>
+  </div>
+
+  <!-- HOLT-WINTERS -->
+  <div class="card">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="badge ast">5</span>
+      <h3>Holt-Winters — Suavização Exponencial Tripla</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="collapsible-content">
+      <div class="highlight-box blue">
+        <strong>Intuição:</strong> Atualiza 3 componentes dinamicamente: nível (L), tendência (B), sazonalidade (S). Observações recentes têm mais peso (exponential decay).
+      </div>
+      <h4>Equações de Holt-Winters Aditivo</h4>
+      <div class="formula">Lₜ = α(Yₜ - Sₜ₋ₛ) + (1-α)(Lₜ₋₁ + Bₜ₋₁)   &nbsp; [Nível]
+Bₜ = β(Lₜ - Lₜ₋₁) + (1-β)Bₜ₋₁           &nbsp; [Tendência]
+Sₜ = γ(Yₜ - Lₜ) + (1-γ)Sₜ₋ₛ             &nbsp; [Sazonalidade]
+Ŷₜ₊h = Lₜ + h·Bₜ + Sₜ₊ₕ₋ₛ               &nbsp; [Previsão h passos à frente]</div>
+      <p>α, β, γ ∈ [0,1] — parâmetros de suavização. Valores próximos de 1 dão mais peso à observação atual. Otimizados por mínimos quadrados.</p>
+
+      <h4>Métricas de Avaliação</h4>
+      <table>
+        <tr><th>Métrica</th><th>Fórmula</th><th>Propriedade</th><th>Quando Usar</th></tr>
+        <tr><td><strong>MAE</strong></td><td>Σ|Yₜ - Ŷₜ| / n</td><td>Mesma unidade, penaliza linearmente, robusto a outliers</td><td>Quando outliers não devem ter peso extra</td></tr>
+        <tr><td><strong>RMSE</strong></td><td>√(Σ(Yₜ-Ŷₜ)² / n)</td><td>Penaliza erros grandes mais (quadrático), mesma unidade</td><td>Quando erros grandes são muito prejudiciais</td></tr>
+        <tr><td><strong>MAPE</strong></td><td>Σ|Yₜ-Ŷₜ|/|Yₜ| / n × 100%</td><td>Percentagem, comparável entre séries diferentes</td><td>Comparar modelos em séries com escalas diferentes; CUIDADO se Yₜ ≈ 0</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+<!-- MODELACAO BAYESIANA SECTION -->
+<div id="mb" class="section">
+  <h2 style="color:var(--mb)">🟢 Modelação Bayesiana</h2>
+
+  <!-- Probabilidade Condicional e Bayes -->
+  <div class="card">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="badge mb">1</span>
+      <h3>Probabilidade Condicional e Teorema de Bayes</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="collapsible-content">
+      <div class="highlight-box blue">
+        <strong>Intuição:</strong> Bayes é uma fórmula para <em>atualizar crenças</em> com nova evidência. Começa com o que você acredita (prior), vê dados, e atualiza (posterior).
+      </div>
+      <h4>Probabilidade Condicional</h4>
+      <div class="formula">P(A|B) = P(A ∩ B) / P(B)</div>
+      <p>Probabilidade de A <em>dado que</em> B já ocorreu. Restringe o espaço amostral.</p>
+
+      <h4>Derivação do Teorema de Bayes</h4>
+      <p>Da definição de probabilidade condicional:</p>
+      <div class="formula">P(A|B) = P(A ∩ B) / P(B)  &nbsp;&nbsp; e  &nbsp;&nbsp; P(B|A) = P(A ∩ B) / P(A)</div>
+      <p>Logo: P(A ∩ B) = P(A|B)·P(B) = P(B|A)·P(A)</p>
+      <div class="formula" style="font-size:1.2em;background:rgba(167,139,250,0.1);border:2px solid var(--accent)">
+        P(A|B) = P(B|A) · P(A) / P(B)
+      </div>
+
+      <h4>Teorema de Bayes para Inferência Estatística</h4>
+      <div class="formula">P(θ | data) = P(data | θ) · P(θ) / P(data)</div>
+      <table>
+        <tr><th>Termo</th><th>Nome</th><th>Significado</th></tr>
+        <tr><td><code>P(θ | data)</code></td><td><strong>Posterior</strong></td><td>O que acreditamos sobre θ APÓS ver os dados</td></tr>
+        <tr><td><code>P(data | θ)</code></td><td><strong>Likelihood</strong></td><td>Probabilidade dos dados dado que θ é o verdadeiro valor</td></tr>
+        <tr><td><code>P(θ)</code></td><td><strong>Prior</strong></td><td>O que acreditamos sobre θ ANTES de ver os dados</td></tr>
+        <tr><td><code>P(data)</code></td><td><strong>Evidence/Normalizing constant</strong></td><td>Garante que posterior soma 1. Muitas vezes ignorado: "∝"</td></tr>
+      </table>
+      <div class="formula">Posterior ∝ Likelihood × Prior</div>
+
+      <h4>Exemplo Concreto: Teste de Doença</h4>
+      <p>Doença tem prevalência 1% (P(D) = 0.01). Teste com sensibilidade 99% (P(+|D) = 0.99) e especificidade 95% (P(-|¬D) = 0.95, logo P(+|¬D) = 0.05).</p>
+      <p>Qual a probabilidade de ter a doença dado teste positivo?</p>
+      <div class="formula">P(D|+) = P(+|D)·P(D) / P(+)
+P(+) = P(+|D)·P(D) + P(+|¬D)·P(¬D) = 0.99×0.01 + 0.05×0.99 = 0.0099 + 0.0495 = 0.0594
+P(D|+) = (0.99 × 0.01) / 0.0594 ≈ 0.167 = 16.7%</div>
+      <div class="highlight-box orange">
+        <strong>Insight:</strong> Mesmo com teste 99% preciso, se a doença é rara (1%), um teste positivo significa apenas 16.7% de chance de ter a doença! Isto é o paradoxo do teste de rastreio — contraintuitivo mas matematicamente correto.
+      </div>
+    </div>
+  </div>
+
+  <!-- Prior Likelihood Posterior -->
+  <div class="card">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="badge mb">2</span>
+      <h3>Prior, Likelihood, Posterior — MAP vs MLE</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="collapsible-content">
+      <h4>O Papel do Prior</h4>
+      <div class="grid2">
+        <div class="box">
+          <h4>Prior Informativo</h4>
+          <p>Incorpora conhecimento real. Ex: sabemos que uma moeda é "provavelmente justa", então usamos Beta(10,10) — concentrado em 0.5.</p>
+          <p><strong>Vantagem:</strong> Com poucos dados, o prior guia para resultados razoáveis</p>
+          <p><strong>Risco:</strong> Prior errado pode enviesar resultados</p>
+        </div>
+        <div class="box">
+          <h4>Prior Não-Informativo (Flat/Diffuse)</h4>
+          <p>Ex: Beta(1,1) = Uniforme. "Não sei nada." Todos os valores igualmente prováveis.</p>
+          <p><strong>Resultado:</strong> Com prior uniforme, MAP = MLE</p>
+          <p><strong>Jeffreys Prior:</strong> Prior não-informativo invariante a reparametrizações</p>
+        </div>
+      </div>
+
+      <h4>MLE vs MAP</h4>
+      <div class="grid2">
+        <div class="box info-box">
+          <h4>MLE — Maximum Likelihood Estimation</h4>
+          <p>Encontra θ que maximiza P(data|θ). Ignora prior.</p>
+          <div class="formula" style="font-size:0.9em">θ̂_MLE = argmax P(data | θ)</div>
+          <p><strong>Frequentista.</strong> Trata θ como constante desconhecida.</p>
+          <p>Com n→∞, MLE é ótimo. Com poucos dados, pode overfit.</p>
+        </div>
+        <div class="box acc-box">
+          <h4>MAP — Maximum A Posteriori</h4>
+          <p>Encontra θ que maximiza P(θ|data) ∝ P(data|θ)·P(θ).</p>
+          <div class="formula" style="font-size:0.9em">θ̂_MAP = argmax P(data|θ)·P(θ)</div>
+          <p><strong>Bayesiano.</strong> O prior atua como regularizador!</p>
+          <p>MAP com prior gaussiano = Ridge Regression (L2)</p>
+          <p>MAP com prior Laplace = Lasso (L1)</p>
+        </div>
+      </div>
+
+      <h4>Distribuições Conjugadas — Crucial para Exame</h4>
+      <div class="highlight-box purple">
+        <strong>Definição:</strong> Uma família de priors é conjugada ao likelihood se o posterior pertence à mesma família do prior. Permite cálculo analítico!
+      </div>
+      <table>
+        <tr><th>Prior</th><th>Likelihood</th><th>Posterior</th><th>Aplicação</th></tr>
+        <tr><td><strong>Beta(α,β)</strong></td><td>Binomial(n,θ)</td><td>Beta(α+k, β+n-k)</td><td>Proporções, taxas de sucesso</td></tr>
+        <tr><td><strong>Normal(μ₀,σ₀²)</strong></td><td>Normal(μ,σ²) com σ² conhecido</td><td>Normal(μₙ, σₙ²)</td><td>Modelos lineares, média populacional</td></tr>
+        <tr><td><strong>Gamma(α,β)</strong></td><td>Poisson(λ)</td><td>Gamma(α+Σy, β+n)</td><td>Contagens, taxas de eventos</td></tr>
+        <tr><td><strong>Dirichlet(α)</strong></td><td>Multinomial(n,θ)</td><td>Dirichlet(α+counts)</td><td>Modelos de tópicos, LDA</td></tr>
+      </table>
+
+      <h4>Exemplo Beta-Binomial Completo</h4>
+      <p>Queremos estimar a probabilidade θ de uma moeda dar cara. Prior: Beta(2,2) (crença de que a moeda é justa). Observamos 7 caras em 10 lançamentos.</p>
+      <div class="formula">Prior: Beta(α=2, β=2)  →  E[θ] = α/(α+β) = 2/4 = 0.5
+Likelihood: Binomial(n=10, k=7)
+Posterior: Beta(α+k, β+n-k) = Beta(2+7, 2+3) = Beta(9, 5)
+E[θ|data] = 9/(9+5) = 9/14 ≈ 0.643</div>
+      <p><strong>Interpretação:</strong> Começamos a achar que a moeda é justa (0.5). Com 7/10 caras, atualizamos para 0.643. O prior "puxou" a estimativa para baixo relativamente ao MLE (0.7).</p>
+
+      <h4>Credible Intervals (Intervalos de Credibilidade)</h4>
+      <p>Um intervalo de 95% credible: "Há 95% de probabilidade de θ estar neste intervalo." Interpretação direta e intuitiva.</p>
+      <div class="highlight-box orange">
+        <strong>Contraste com Frequentista:</strong> Um IC 95% frequentista NÃO significa "95% de prob. de θ estar aqui" — significa "95% dos ICs construídos deste modo conteriam o θ verdadeiro". Isto é muito mais difícil de comunicar!
+      </div>
+    </div>
+  </div>
+
+  <!-- MCMC -->
+  <div class="card">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="badge mb">3</span>
+      <h3>MCMC — Markov Chain Monte Carlo</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="collapsible-content">
+      <div class="highlight-box blue">
+        <strong>Intuição:</strong> Quando o posterior não tem forma analítica conhecida, precisamos de amostras. MCMC é um algoritmo para amostrar de distribuições complexas sem precisar de calculá-las explicitamente.
+      </div>
+      <h4>Porquê MCMC?</h4>
+      <p>Em modelos complexos com muitos parâmetros, P(data) = ∫P(data|θ)P(θ)dθ é intratável. MCMC contorna este problema: em vez de calcular o posterior, <em>amostras</em> dele.</p>
+
+      <h4>Metropolis-Hastings Algorithm</h4>
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">Inicializar θ₀ (qualquer valor razoável)</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">Propor θ* ~ q(θ*|θₜ) (distribuição de proposta, ex: Normal centrada em θₜ)</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">Calcular α = min(1, [P(data|θ*)P(θ*)] / [P(data|θₜ)P(θₜ)]) — ratio de posteriors</div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">Aceitar θ* com probabilidade α. Se aceite, θₜ₊₁ = θ*. Senão, θₜ₊₁ = θₜ</div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-content">Repetir. Após burn-in, as amostras convergem para o posterior.</div>
+      </div>
+
+      <h4>Convergência e Diagnóstico</h4>
+      <table>
+        <tr><th>Problema</th><th>O Que Acontece</th><th>Diagnóstico</th><th>Solução</th></tr>
+        <tr><td>Burn-in</td><td>Amostras iniciais dependem do ponto de partida</td><td>Traceplot não se mistura</td><td>Descartar primeiras N amostras</td></tr>
+        <tr><td>Autocorrelação alta</td><td>Amostras consecutivas são similares → ineficiência</td><td>ACF das amostras</td><td>Thinning (1 em cada K amostras)</td></tr>
+        <tr><td>Não convergência</td><td>Cadeia presa em modo local</td><td>R̂ (Gelman-Rubin) &gt; 1.1</td><td>Mais iterações, melhor proposta, múltiplas cadeias</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- Frequentista vs Bayesiano -->
+  <div class="card">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="badge mb">4</span>
+      <h3>Frequentista vs Bayesiano</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="collapsible-content">
+      <table>
+        <tr><th>Aspeto</th><th>Frequentista</th><th>Bayesiano</th></tr>
+        <tr><td>Probabilidade</td><td>Frequência de eventos em repetições longas</td><td>Grau de crença (subjetivo)</td></tr>
+        <tr><td>Parâmetros</td><td>Constantes fixas (desconhecidas)</td><td>Variáveis aleatórias com distribuições</td></tr>
+        <tr><td>Incerteza</td><td>p-values, intervalos de confiança</td><td>Distribuição posterior, credible intervals</td></tr>
+        <tr><td>Conhecimento prévio</td><td>Ignorado (ou incluído via regularização)</td><td>Explicitamente modelado (prior)</td></tr>
+        <tr><td>Dados pequenos</td><td>Estimativas instáveis</td><td>Prior estabiliza estimativas</td></tr>
+        <tr><td>Interpretação IC 95%</td><td>"95% dos ICs assim construídos conteriam θ"</td><td>"P(θ ∈ [a,b] | data) = 0.95"</td></tr>
+        <tr><td>Complexidade computacional</td><td>Baixa (geralmente)</td><td>Alta (MCMC, integração)</td></tr>
+        <tr><td>Popularidade em ML</td><td>MLE, regressão clássica</td><td>BNNs, Gaussian Processes, Stan</td></tr>
+      </table>
+      <div class="highlight-box green">
+        <strong>Pergunta de exame típica:</strong> "Explique a diferença filosófica entre interpretação frequentista e bayesiana de probabilidade." → Resposta: Frequentista = frequência relativa em longo prazo. Bayesiano = grau de crença que pode ser atualizado com dados.
+      </div>
+    </div>
+  </div>
+</div>
+<!-- EXAMES SECTION -->
+<div id="exames" class="section">
+  <h2>📝 Questões de Exame</h2>
+
+  <h3 style="color:var(--tm)">🔴 Text Mining — Questões Curtas</h3>
+  <button class="show-all-btn" onclick="showAllAnswers('tm-q')">Mostrar Todas as Respostas</button>
+
+  <div class="exam-question tm-q" onclick="this.classList.toggle('show-ans')">
+    <div class="q-num">TM-Q1 | Resposta Curta</div>
+    <div class="q-text">Explique a diferença entre Stemming e Lemmatization. Dê um exemplo de quando Lemmatization seria preferível.</div>
+    <div class="q-answer">Stemming aplica regras heurísticas para reduzir palavras à sua raiz (pode gerar não-palavras: "studies" → "studi"). Lemmatization usa dicionários morfológicos para obter a forma canônica ("studies" → "study", "better" → "good"). Lemmatization é preferível quando a interpretabilidade importa (e.g., análise linguística) ou quando palavras de classes gramaticais diferentes são relevantes ("is/am/are" → "be" vs Stemming que as trata diferentemente).</div>
+  </div>
+
+  <div class="exam-question tm-q" onclick="this.classList.toggle('show-ans')">
+    <div class="q-num">TM-Q2 | Cálculo</div>
+    <div class="q-text">Calcule TF-IDF da palavra "data" nos documentos D1="data mining is fun", D2="data science uses data", D3="fun with science". Mostre todos os passos. Use log base 10.</div>
+    <div class="q-answer">TF("data",D1) = 1/4 = 0.25; TF("data",D2) = 2/4 = 0.5; TF("data",D3) = 0/3 = 0<br>df("data") = 2 docs (D1 e D2)<br>IDF("data") = log₁₀(3/2) = log₁₀(1.5) ≈ 0.176<br>TF-IDF(D1) = 0.25 × 0.176 = 0.044<br>TF-IDF(D2) = 0.5 × 0.176 = 0.088<br>TF-IDF(D3) = 0 × 0.176 = 0</div>
+  </div>
+
+  <div class="exam-question tm-q" onclick="this.classList.toggle('show-ans')">
+    <div class="q-num">TM-Q3 | Conceptual</div>
+    <div class="q-text">Porquê o TF-IDF atribui peso zero a stopwords como "o", "a", "de"? Explique matematicamente.</div>
+    <div class="q-answer">Stopwords aparecem em todos (ou quase todos) os documentos. Se uma palavra t aparece em N documentos e o corpus tem N documentos, então IDF(t) = log(N/N) = log(1) = 0. Como TF-IDF = TF × IDF, e IDF = 0, o TF-IDF é 0 independentemente do TF. A intuição é que uma palavra que está em todos os documentos não distingue nenhum → não tem valor discriminativo.</div>
+  </div>
+
+  <div class="exam-question tm-q" onclick="this.classList.toggle('show-ans')">
+    <div class="q-num">TM-Q4 | Algoritmo</div>
+    <div class="q-text">Explique a "ingenuidade" do Naive Bayes e por que, apesar disso, o algoritmo funciona bem em prática para classificação de texto.</div>
+    <div class="q-answer">A ingenuidade é assumir independência condicional entre as palavras dado a classe: P(w₁,w₂,...|c) = ∏P(wᵢ|c). Isto é claramente falso ("New York" tem dependência forte). Mas NB funciona porque: (1) para classificação o que importa é comparar P(c₁|d)/P(c₂|d) — o numerador/denominador erram na mesma direção; (2) com alta dimensionalidade as violações tendem a se cancelar; (3) é robusto ao overfitting com poucos dados; (4) é extremamente eficiente computacionalmente.</div>
+  </div>
+
+  <div class="exam-question tm-q" onclick="this.classList.toggle('show-ans')">
+    <div class="q-num">TM-Q5 | Análise</div>
+    <div class="q-text">Descreva o problema de Negation Handling em Sentiment Analysis. Dê dois exemplos linguísticos que tornam este problema particularmente difícil.</div>
+    <div class="q-answer">Negação inverte a polaridade de termos adjacentes: "bom" (positivo) torna-se negativo em "não é bom". A estratégia NOT-prefix trata palavras após negação como opostas. Casos difíceis: (1) Dupla negação — "não é mau" = positivo, mas NOT-prefix marcaria "NOT_mau" como negativo; (2) Scope longo — "O que eu não esperava era gostar tanto" — a negação tem scope complexo que regras simples de janela não capturam; (3) Ironia — "Adorei esperar 2 horas" é negativo apesar de vocabulário positivo.</div>
+  </div>
+
+  <div class="exam-question tm-q" onclick="this.classList.toggle('show-ans')">
+    <div class="q-num">TM-Q6 | Word Embeddings</div>
+    <div class="q-text">Explique geometricamente porquê vec("rei") - vec("homem") + vec("mulher") ≈ vec("rainha").</div>
+    <div class="q-answer">Word2Vec aprende vetores onde palavras em contextos similares ficam próximas. "Rei" e "rainha" partilham contextos de realeza (coroa, palácio, reino). "Homem" e "mulher" partilham contextos genéricos com diferença apenas de género. O vetor (rei - homem) captura a dimensão "realeza sem género masculino". Adicionando vec("mulher"), deslocamos este vetor para incorporar género feminino, chegando a "rainha" — o resultado combina realeza + feminino. O espaço vetorial captura relações analógicas porque a estrutura distribucional do vocabulário codifica estas relações semânticas.</div>
+  </div>
+
+  <div class="exam-question tm-q" onclick="this.classList.toggle('show-ans')">
+    <div class="q-num">TM-Q7 | Transformers</div>
+    <div class="q-text">Explique o mecanismo de Self-Attention nos Transformers. Para que serve o fator 1/√d_k?</div>
+    <div class="q-answer">Self-Attention permite que cada posição na sequência "atenda" a todas as outras posições. Para cada palavra são calculados três vetores: Query (o que procuro), Key (o que ofereço) e Value (o que contribuo). O score de atenção entre posição i e j é: score = Qᵢ · Kⱼᵀ / √d_k. Softmax normaliza os scores em pesos. O output é a soma ponderada dos Values. √d_k: sem este fator, com dimensões grandes (d_k=512), os produtos internos ficam muito grandes em magnitude, fazendo o softmax saturar em regiões com gradientes muito pequenos, dificultando o treino.</div>
+  </div>
+
+  <div class="exam-question tm-q" onclick="this.classList.toggle('show-ans')">
+    <div class="q-num">TM-Q8 | Comparação</div>
+    <div class="q-text">Compare Bag-of-Words com Word Embeddings. Em que situações cada abordagem seria preferível?</div>
+    <div class="q-answer">BoW/TF-IDF: vetores esparsos, alta dimensionalidade (|vocab|), ignora ordem e semântica, sem relação entre palavras similares. Word Embeddings: vetores densos, baixa dimensionalidade (100-300), captura semântica e similaridade, requer grandes corpora de pré-treino. BoW preferível: (1) datasets pequenos sem embeddings pré-treinados; (2) classificação por keywords específicas; (3) interpretabilidade total necessária; (4) línguas com poucos recursos. Embeddings preferíveis: (1) semântica importa (sinónimos devem ser equivalentes); (2) tarefas de similaridade/analogia; (3) modelos downstream deep learning; (4) dados suficientes para treino ou embeddings pré-treinados disponíveis.</div>
+  </div>
+
+  <h3 style="color:var(--ast);margin-top:32px">🟡 Séries Temporais — Questões</h3>
+  <button class="show-all-btn" onclick="showAllAnswers('ast-q')">Mostrar Todas as Respostas</button>
+
+  <div class="exam-question ast-q" onclick="this.classList.toggle('show-ans')">
+    <div class="q-num">ST-Q1 | Conceptual</div>
+    <div class="q-text">O que significa uma série temporal ser "estacionária"? Por que é que esta propriedade é fundamental para a modelação com ARIMA?</div>
+    <div class="q-answer">Uma série é fracamente estacionária se: (1) média constante E[Yₜ] = μ ∀t; (2) variância constante Var[Yₜ] = σ² ∀t; (3) autocovariância Cov(Yₜ,Yₜ₊ₖ) depende só do lag k, não de t. É fundamental para ARIMA porque: os parâmetros AR/MA assumem relações estáveis ao longo do tempo. Numa série não-estacionária, os padrões mudam — o modelo aprendido com dados passados não generaliza para o futuro. Além disso, testes estatísticos e propriedades teóricas dos estimadores de mínimos quadrados dependem de estacionaridade.</div>
+  </div>
+
+  <div class="exam-question ast-q" onclick="this.classList.toggle('show-ans')">
+    <div class="q-num">ST-Q2 | Análise</div>
+    <div class="q-text">Você observa numa série: ACF decai gradualmente (ondas sinusoidais), PACF corta abruptamente após lag 3. Que modelo sugere? Que parâmetros ARIMA(p,d,q) usaria se a série já for estacionária?</div>
+    <div class="q-answer">ACF decai gradualmente → processo AR (a ação de AR faz o ACF decair exponencialmente). PACF corta após lag 3 → ordem AR = 3. Logo, sugere modelo AR(3). Em notação ARIMA: ARIMA(3, 0, 0) — p=3 (três lags AR), d=0 (série já estacionária), q=0 (sem componente MA). O modelo seria: Yₜ = c + φ₁Yₜ₋₁ + φ₂Yₜ₋₂ + φ₃Yₜ₋₃ + εₜ</div>
+  </div>
+
+  <div class="exam-question ast-q" onclick="this.classList.toggle('show-ans')">
+    <div class="q-num">ST-Q3 | Diferença</div>
+    <div class="q-text">Explique a diferença entre sazonalidade e ciclo numa série temporal. Por que é que distinguir estas componentes pode ser difícil em prática?</div>
+    <div class="q-answer">Sazonalidade: padrão periódico com período fixo e conhecido (ex: mensal=12, semanal=7). Ocorre por causas fixas: estações do ano, calendário. Ciclo: flutuações de longo prazo com período variável (geralmente 2-10 anos). Causas: ciclos económicos, tecnológicos. Dificuldades de distinção: (1) o período do ciclo varia — impossível definir s como na sazonalidade; (2) ciclos curtos (2 anos) podem ser confundidos com sazonalidade com s=24 (meses); (3) em séries curtas (menos de 2-3 ciclos), não há dados suficientes para estimar o ciclo; (4) correlação espúria entre tendência e ciclo.</div>
+  </div>
+
+  <div class="exam-question ast-q" onclick="this.classList.toggle('show-ans')">
+    <div class="q-num">ST-Q4 | Métricas</div>
+    <div class="q-text">Compare MAE, RMSE e MAPE. Em que circunstâncias cada métrica seria inapropriada?</div>
+    <div class="q-answer">MAE = média de |erros| — simples, robusta a outliers, mesma unidade. Inapropriada: quando erros grandes têm custo desproporcional (aviação, medicina). RMSE = raiz de médias de erros² — penaliza erros grandes mais, mesma unidade. Inapropriada: quando há outliers naturais na série que não devem ser penalizados desproporcionalmente. MAPE = erro percentual médio — comparável entre séries de escalas diferentes. Inapropriada: (1) quando Yₜ≈0 (divisão por zero); (2) assimétrica — overforecast e underforecast com mesmo erro absoluto têm MAPE diferente; (3) séries com valores negativos.</div>
+  </div>
+
+  <h3 style="color:var(--mb);margin-top:32px">🟢 Modelação Bayesiana — Questões</h3>
+  <button class="show-all-btn" onclick="showAllAnswers('mb-q')">Mostrar Todas as Respostas</button>
+
+  <div class="exam-question mb-q" onclick="this.classList.toggle('show-ans')">
+    <div class="q-num">MB-Q1 | Derivação</div>
+    <div class="q-text">Derive o Teorema de Bayes a partir da definição de probabilidade condicional. Identifique cada termo na expressão P(θ|data).</div>
+    <div class="q-answer">Por definição: P(A|B) = P(A∩B)/P(B) → P(A∩B) = P(A|B)·P(B). Simetria: P(A∩B) = P(B|A)·P(A). Logo P(A|B)·P(B) = P(B|A)·P(A) → P(A|B) = P(B|A)·P(A)/P(B). Para inferência: P(θ|data) = P(data|θ)·P(θ)/P(data). Posterior P(θ|data): crença sobre θ após observar dados. Likelihood P(data|θ): prob. dos dados se θ fosse o valor verdadeiro. Prior P(θ): crença inicial sobre θ. Evidence P(data): constante normalizadora = ∫P(data|θ)P(θ)dθ.</div>
+  </div>
+
+  <div class="exam-question mb-q" onclick="this.classList.toggle('show-ans')">
+    <div class="q-num">MB-Q2 | Cálculo</div>
+    <div class="q-text">Prior Beta(3,3). Observa 8 sucessos em 12 tentativas. Calcule: (a) o posterior; (b) a média do posterior; (c) compare com MLE.</div>
+    <div class="q-answer">(a) Posterior = Beta(α+k, β+n-k) = Beta(3+8, 3+4) = Beta(11, 7). (b) E[θ|data] = α/(α+β) = 11/(11+7) = 11/18 ≈ 0.611. (c) MLE = k/n = 8/12 = 0.667. O prior Beta(3,3) tem média 0.5, "puxando" a estimativa bayesiana de 0.667 para 0.611. Com mais dados, o posterior converge para MLE. Com menos dados, o prior tem mais influência — isto é o "regularizing effect" do prior.</div>
+  </div>
+
+  <div class="exam-question mb-q" onclick="this.classList.toggle('show-ans')">
+    <div class="q-num">MB-Q3 | Discursiva</div>
+    <div class="q-text">Discuta as vantagens e limitações da abordagem bayesiana versus frequentista para análise de dados com amostras pequenas.</div>
+    <div class="q-answer">Bayesiana com amostras pequenas — Vantagens: (1) Prior incorpora conhecimento domínio, prevenindo estimativas absurdas; (2) Quantifica incerteza parametricamente via distribuição posterior; (3) Credible intervals têm interpretação direta ("95% prob de θ ∈ [a,b]"); (4) Não depende de assintóticos. Limitações: (1) Resultados sensíveis ao prior — escolha subjetiva crítica com poucos dados; (2) Computacionalmente custoso (MCMC); (3) Difícil de comunicar a não especialistas. Frequentista — Vantagens: objetividade (sem prior), familiar, eficiente. Limitações: ICs não têm interpretação direta; com n pequeno, pressupostos assintóticos do MLE falham; sem forma de incorporar conhecimento prévio.</div>
+  </div>
+
+  <div class="exam-question mb-q" onclick="this.classList.toggle('show-ans')">
+    <div class="q-num">MB-Q4 | MCMC</div>
+    <div class="q-text">Explique por que o algoritmo de Metropolis-Hastings funciona: por que amostrar pelo critério de aceitação α converge para amostras do posterior?</div>
+    <div class="q-answer">Metropolis-Hastings é um algoritmo MCMC que constrói uma cadeia de Markov cuja distribuição estacionária é o posterior P(θ|data). O critério de aceitação α = min(1, P(θ*|data)/P(θₜ|data)) garante detailed balance: a taxa de transição de θₐ para θᵦ é igual à de θᵦ para θₐ ponderada pelos posteriors. Isto implica que a distribuição estacionária é proporcional ao posterior. Na prática: estados com maior posterior são visitados mais frequentemente (pois são mais frequentemente aceites). O ratio do posterior cancela a constante normalizadora P(data) — não precisamos de calculá-la! Com burn-in suficiente, as amostras seguem aproximadamente o posterior.</div>
+  </div>
+</div>
+<!-- FLASHCARDS SECTION -->
+<div id="flashcards" class="section">
+  <h2>🃏 Flashcards</h2>
+  <p style="color:var(--muted);margin-bottom:20px">Clique em cada card para ver a resposta.</p>
+
+  <h3 style="color:var(--tm)">🔴 Text Mining</h3>
+  <div class="flashcard" onclick="this.classList.toggle('open')">
+    <div class="q">O que é TF-IDF e para que serve?</div>
+    <div class="a">TF-IDF = Term Frequency × Inverse Document Frequency. Pondera palavras sendo: alta freq no doc (TF alto) mas rara no corpus (IDF alto) → peso alto. Serve para representar documentos com destaque para termos discriminativos. Stopwords (em todos os docs) → IDF=0 → TF-IDF=0 automaticamente.</div>
+  </div>
+  <div class="flashcard" onclick="this.classList.toggle('open')">
+    <div class="q">Qual a diferença entre CBOW e Skip-gram no Word2Vec?</div>
+    <div class="a">CBOW: contexto → palavra central (prediz a palavra central a partir do contexto). Skip-gram: palavra central → contexto (prediz o contexto a partir da palavra central). CBOW: mais rápido, melhor para palavras frequentes. Skip-gram: melhor para palavras raras, captura relações mais ricas.</div>
+  </div>
+  <div class="flashcard" onclick="this.classList.toggle('open')">
+    <div class="q">O que é Self-Attention nos Transformers?</div>
+    <div class="a">Mecanismo que permite cada posição da sequência "atender" a todas as outras. Calcula Q (Query), K (Key), V (Value) para cada posição. Score = softmax(QKᵀ/√d_k)·V. Output é soma ponderada dos Values pelos scores de atenção. Captura dependências de longa distância sem recorrência.</div>
+  </div>
+  <div class="flashcard" onclick="this.classList.toggle('open')">
+    <div class="q">O que é overfitting e como detectá-lo?</div>
+    <div class="a">Overfitting: modelo "decora" o treino mas não generaliza. O modelo é complexo demais para os dados disponíveis. Detectar: accuracy/loss muito melhor no treino que no teste (gap grande). Ex: train acc = 98%, test acc = 61%. Soluções: regularização (L1/L2), dropout, mais dados, modelo mais simples, early stopping.</div>
+  </div>
+  <div class="flashcard" onclick="this.classList.toggle('open')">
+    <div class="q">Por que usar Cosine Similarity em vez de Distância Euclidiana para comparar documentos?</div>
+    <div class="a">Distância Euclidiana é afetada pelo comprimento do documento — um doc longo sempre terá maior distância de outro, mesmo com mesmo tema. Cosine mede o ângulo entre vetores, normalizando pelo comprimento. Dois docs com mesma distribuição de palavras mas um mais longo têm cosine=1 (idênticos) mas distância euclidiana grande. Para texto, o que importa é a proporção de palavras, não o total.</div>
+  </div>
+
+  <h3 style="color:var(--ast);margin-top:28px">🟡 Séries Temporais</h3>
+  <div class="flashcard" onclick="this.classList.toggle('open')">
+    <div class="q">Como usar ACF e PACF para identificar modelo AR(p), MA(q) ou ARMA(p,q)?</div>
+    <div class="a">AR(p): ACF decai gradualmente (exponencial/oscilatório) + PACF corta bruscamente após lag p → p = último lag significativo no PACF. MA(q): ACF corta bruscamente após lag q + PACF decai gradualmente → q = último lag significativo no ACF. ARMA(p,q): ambas decaem gradualmente. Threshold: picos fora das bandas ±1.96/√n.</div>
+  </div>
+  <div class="flashcard" onclick="this.classList.toggle('open')">
+    <div class="q">O que significam os parâmetros p, d, q no ARIMA(p,d,q)?</div>
+    <div class="a">p = ordem AR (número de lags de Yₜ usados), determinado pelo PACF. d = grau de diferenciação para estacionarizar (quantas vezes diferenciar até ADF rejeitar H₀). q = ordem MA (número de lags do erro εₜ usados), determinado pelo ACF. ARIMA(1,1,1): 1 lag AR + 1 diferenciação + 1 lag MA.</div>
+  </div>
+  <div class="flashcard" onclick="this.classList.toggle('open')">
+    <div class="q">Qual a diferença entre modelo aditivo e multiplicativo de decomposição?</div>
+    <div class="a">Aditivo: Y = T + S + C + ε — amplitude sazonal constante ao longo do tempo. Multiplicativo: Y = T × S × C × ε — amplitude sazonal proporcional ao nível da série (cresce com os valores). Detectar: se flutuações sazonais aumentam quando a série sobe → multiplicativo. Transformação log converte multiplicativo em aditivo: log(Y) = log(T) + log(S) + ...</div>
+  </div>
+  <div class="flashcard" onclick="this.classList.toggle('open')">
+    <div class="q">Quando usar MAPE vs RMSE?</div>
+    <div class="a">MAPE: útil para comparar modelos em séries com escalas diferentes (é percentagem). NÃO usar quando Yₜ≈0 (divisão por zero). RMSE: útil quando erros grandes têm custo desproporcional (penaliza quadraticamente). Mesma unidade da série. NÃO ideal se houver outliers naturais na série que não devem ser penalizados. MAE: robusto, simples, boa opção default.</div>
+  </div>
+
+  <h3 style="color:var(--mb);margin-top:28px">🟢 Modelação Bayesiana</h3>
+  <div class="flashcard" onclick="this.classList.toggle('open')">
+    <div class="q">Enuncie o Teorema de Bayes e identifique cada termo.</div>
+    <div class="a">P(θ|data) = P(data|θ) · P(θ) / P(data). Posterior = crença sobre θ após ver dados. Likelihood = prob. dos dados dado θ. Prior = crença antes dos dados. Evidence = constante normalizadora. Forma prática: Posterior ∝ Likelihood × Prior (ignorar evidence).</div>
+  </div>
+  <div class="flashcard" onclick="this.classList.toggle('open')">
+    <div class="q">O que são distribuições conjugadas? Dê o exemplo Beta-Binomial.</div>
+    <div class="a">Prior conjugado: prior e posterior pertencem à mesma família de distribuições. Permite cálculo analítico do posterior. Beta-Binomial: Prior Beta(α,β) + Likelihood Binomial(n,k) → Posterior Beta(α+k, β+n-k). Ex: Prior Beta(2,2), observar 7 caras em 10 → Posterior Beta(9,5). Média posterior = 9/14 ≈ 0.643 vs MLE = 7/10 = 0.70.</div>
+  </div>
+  <div class="flashcard" onclick="this.classList.toggle('open')">
+    <div class="q">Qual a diferença filosófica entre MLE e MAP?</div>
+    <div class="a">MLE (frequentista): θ̂ = argmax P(data|θ) — encontra θ que torna os dados mais prováveis, sem prior. MAP (bayesiano): θ̂ = argmax P(θ|data) ∝ P(data|θ)·P(θ) — maximiza posterior, o prior atua como regularizador. Com prior uniforme, MAP = MLE. MAP com prior gaussiano = Ridge Regression. MAP com prior Laplace = Lasso. Com n→∞, ambos convergem.</div>
+  </div>
+  <div class="flashcard" onclick="this.classList.toggle('open')">
+    <div class="q">O que é MCMC e porquê é necessário?</div>
+    <div class="a">MCMC (Markov Chain Monte Carlo): família de algoritmos para amostrar de distribuições complexas. Necessário quando: posterior não tem forma analítica conhecida (modelo complexo, muitos parâmetros). A integral P(data) = ∫P(data|θ)P(θ)dθ é intratável. MCMC constrói cadeia de Markov cuja distribuição estacionária é o posterior — sem precisar calcular a normalizing constant. Metropolis-Hastings: propõe θ*, aceita com prob. α = min(1, ratio de posteriors).</div>
+  </div>
+  <div class="flashcard" onclick="this.classList.toggle('open')">
+    <div class="q">Como interpretar um Credible Interval bayesiano vs Intervalo de Confiança frequentista?</div>
+    <div class="a">Credible Interval 95%: "Dado os dados observados, há 95% de probabilidade de θ estar neste intervalo." Interpretação direta e intuitiva. IC 95% frequentista: "Se repetíssemos o experimento muitas vezes e construíssemos um IC em cada repetição, 95% dos ICs conteriam o θ verdadeiro." θ é fixo — não é probabilístico. O IC de um único experimento ou contém θ ou não. Esta distinção é fundamental para comunicação científica.</div>
+  </div>
 </div>
 
+</div><!-- end container -->
+
 <script>
-// ===== PLANO DE ESTUDOS =====
-const days = [
-  { date: "15 Jun, Seg", label: "Início", subject: "tm", badge: "badge-tm", badgeText: "Text Mining",
-    tasks: ["Lê o resumo de Text Mining no separador Professor", "Conceitos: O que é NLP e Text Mining?", "Exercício: identifica 3 aplicações reais de Text Mining"] },
-  { date: "16 Jun, Ter", label: "Pré-processamento de Texto", subject: "tm", badge: "badge-tm", badgeText: "Text Mining",
-    tasks: ["Tokenização e remoção de stopwords", "Stemming vs Lemmatization", "Exercício prático: processa uma frase manualmente"] },
-  { date: "17 Jun, Qua", label: "Representação de Texto", subject: "tm", badge: "badge-tm", badgeText: "Text Mining",
-    tasks: ["Bag of Words (BoW)", "TF-IDF — como funciona e para que serve", "Quiz no separador Professor"] },
-  { date: "18 Jun, Qui", label: "Classificação de Texto", subject: "tm", badge: "badge-tm", badgeText: "Text Mining",
-    tasks: ["Naive Bayes para texto", "SVM e árvores de decisão aplicadas a texto", "Exemplo: classificar emails como spam ou não"] },
-  { date: "19 Jun, Sex", label: "Clustering e Topic Modeling", subject: "tm", badge: "badge-tm", badgeText: "Text Mining",
-    tasks: ["K-means aplicado a documentos", "LDA (Latent Dirichlet Allocation) — conceito simples", "Exercício: o que é um tópico num conjunto de textos?"] },
-  { date: "20 Jun, Sáb", label: "Manhã de revisão", subject: "tm", badge: "badge-tm", badgeText: "Text Mining",
-    tasks: ["Revisão geral de todos os tópicos TM", "Faz os quizzes do separador Professor", "Anota dúvidas para resolver antes da prova"] },
-  { date: "21 Jun, Dom", label: "Descanso 🌿", subject: "rest", badge: "badge-rest", badgeText: "Descanso",
-    tasks: ["Dia de descanso — não estudas à tarde/noite", "Se quiseres, só uma leitura leve de 20 min de manhã"] },
-  { date: "22 Jun, Seg", label: "Word Embeddings", subject: "tm", badge: "badge-tm", badgeText: "Text Mining",
-    tasks: ["Word2Vec — intuição básica", "GloVe e FastText: diferenças", "Por que os embeddings são melhores que BoW?"] },
-  { date: "23 Jun, Ter", label: "Sentiment Analysis", subject: "tm", badge: "badge-tm", badgeText: "Text Mining",
-    tasks: ["Análise de sentimento: positivo/negativo/neutro", "Abordagens léxicas vs ML", "Exemplo real: reviews de produto"] },
-  { date: "24 Jun, Qua", label: "Revisão Final Text Mining", subject: "tm", badge: "badge-tm", badgeText: "Text Mining",
-    tasks: ["Revisão rápida de todos os tópicos", "Simula a prova: responde perguntas sem ver as notas", "Organiza folha de fórmulas/conceitos chave"] },
-  { date: "25 Jun, Qui", label: "Véspera da prova 🎯", subject: "tm", badge: "badge-exam", badgeText: "VÉSPERA",
-    tasks: ["Leitura leve — só conceitos, nada novo", "Descansa bem à tarde/noite", "Prepara o que levas para a prova"] },
-  { date: "26 Jun, Sex", label: "🔴 PROVA: Text Mining 18:30", subject: "exam", badge: "badge-exam", badgeText: "EXAME",
-    tasks: ["Prova Text Mining — 18:30 a 21:30", "Sala: C6.02", "Boa sorte! 💪"] },
-  { date: "27 Jun, Sáb", label: "Início: Séries Temporais", subject: "ast", badge: "badge-ast", badgeText: "Séries Temporais",
-    tasks: ["O que é uma série temporal?", "Componentes: tendência, sazonalidade, ruído", "Exemplos: temperatura, vendas, bolsa"] },
-  { date: "28 Jun, Dom", label: "Descanso 🌿", subject: "rest", badge: "badge-rest", badgeText: "Descanso",
-    tasks: ["Dia de descanso merecido após a prova de TM"] },
-  { date: "29 Jun, Seg", label: "Modelos ARIMA", subject: "ast", badge: "badge-ast", badgeText: "Séries Temporais",
-    tasks: ["AR, MA e ARMA — intuição simples", "ARIMA — o que é o I (integrado)?", "Como identificar p, d, q?"] },
-  { date: "30 Jun, Ter", label: "Estacionaridade e ACF/PACF", subject: "ast", badge: "badge-ast", badgeText: "Séries Temporais",
-    tasks: ["O que é estacionaridade e por que importa?", "Autocorrelação (ACF) e autocorrelação parcial (PACF)", "Como ler os gráficos ACF/PACF"] },
-  { date: "1 Jul, Qua", label: "Sazonalidade e SARIMA", subject: "ast", badge: "badge-ast", badgeText: "Séries Temporais",
-    tasks: ["Modelos sazonais: SARIMA", "Decomposição de séries temporais", "Exemplo: vendas mensais com padrão sazonal"] },
-  { date: "2 Jul, Qui", label: "Previsão e Avaliação", subject: "ast", badge: "badge-ast", badgeText: "Séries Temporais",
-    tasks: ["MAE, RMSE, MAPE — como avaliar previsões?", "Horizonte de previsão e intervalos de confiança", "Comparar modelos: qual escolher?"] },
-  { date: "3 Jul, Sex", label: "Modelos alternativos", subject: "ast", badge: "badge-ast", badgeText: "Séries Temporais",
-    tasks: ["Suavização exponencial (Holt-Winters)", "Prophet (Facebook) — intuição", "Quando usar cada modelo?"] },
-  { date: "4 Jul, Sáb", label: "Revisão Séries Temporais", subject: "ast", badge: "badge-ast", badgeText: "Séries Temporais",
-    tasks: ["Revisão geral — todos os tópicos", "Faz os quizzes do separador Professor", "Simula perguntas de exame"] },
-  { date: "5 Jul, Dom", label: "Descanso 🌿", subject: "rest", badge: "badge-rest", badgeText: "Descanso",
-    tasks: ["Descanso — não estudas à tarde/noite"] },
-  { date: "6 Jul, Seg", label: "Véspera Séries Temporais 🎯", subject: "ast", badge: "badge-exam", badgeText: "VÉSPERA",
-    tasks: ["Revisão leve de fórmulas e conceitos", "Descansa bem", "Prepara o material para amanhã"] },
-  { date: "7 Jul, Ter", label: "🟡 PROVA: Séries Temporais 18:30", subject: "exam", badge: "badge-exam", badgeText: "EXAME",
-    tasks: ["Prova Séries Temporais — 18:30 a 21:30", "Sala: AA3.28", "Vai com calma, já estudaste tudo! ⭐"] },
-  { date: "8 Jul, Qua", label: "Modelação Bayesiana — Base", subject: "mb", badge: "badge-mb", badgeText: "Bayes",
-    tasks: ["Probabilidade condicional e Teorema de Bayes", "Prior, Likelihood, Posterior — os 3 elementos", "Exemplo simples: teste médico com Bayes"] },
-  { date: "9 Jul, Qui", label: "Inferência Bayesiana", subject: "mb", badge: "badge-mb", badgeText: "Bayes",
-    tasks: ["Distribuições conjugadas (Beta-Binomial, Normal-Normal)", "Credible intervals vs intervalos de confiança frequentistas", "Revisão geral e simulação de exame"] },
-  { date: "10 Jul, Sex", label: "🟢 PROVA: Modelação Bayesiana 18:30", subject: "exam", badge: "badge-exam", badgeText: "EXAME",
-    tasks: ["Prova Modelação Bayesiana — 18:30 a 21:30", "Sala: AA2.25", "Última prova — dás tudo! 🏆"] },
-];
-
-// ===== CONTEÚDO PROFESSOR =====
-const tmTopics = [
-  { title: "O que é Text Mining?",
-    explain: "Text Mining (mineração de texto) é o processo de extrair informação útil e padrões a partir de texto não estruturado. Pensa assim: tens milhares de reviews de clientes — o Text Mining ajuda-te a perceber automaticamente o que as pessoas gostam ou não gostam, sem leres uma por uma.",
-    example: "Exemplo real: a Amazon usa Text Mining para analisar reviews e perceber quais produtos têm problemas frequentes. O Netflix usa para perceber o que os utilizadores dizem sobre séries.",
-    quiz: { q: "O que é Text Mining?", opts: ["Minerar ouro com computadores", "Extrair padrões úteis de texto não estruturado", "Criar bases de dados de texto", "Comprimir ficheiros de texto"], correct: 1 }
-  },
-  { title: "Pré-processamento de Texto",
-    explain: "Antes de analisar texto, precisamos de o limpar. Os passos principais são: (1) Tokenização: dividir o texto em palavras; (2) Remoção de stopwords: tirar palavras sem significado como 'o', 'a', 'e', 'que'; (3) Stemming: reduzir palavras à raiz — 'correndo', 'correu', 'correr' → 'corr'; (4) Lemmatization: mais inteligente que stemming — 'is', 'are', 'was' → 'be'.",
-    example: "Frase original: 'Os gatos estavam a correr muito rápido pelos jardins'\nApós pré-processamento: ['gat', 'corr', 'rápid', 'jardim']",
-    quiz: { q: "O que faz a remoção de stopwords?", opts: ["Remove erros ortográficos", "Remove palavras sem significado como 'o', 'a', 'e'", "Remove pontuação", "Remove números"], correct: 1 }
-  },
-  { title: "TF-IDF — Como o Texto Vira Números",
-    explain: "Para aplicar algoritmos de ML ao texto, precisamos de convertê-lo em números. TF-IDF (Term Frequency-Inverse Document Frequency) dá um peso a cada palavra: palavras que aparecem muito num documento específico mas raramente nos outros têm peso alto — são as mais 'características' desse documento. Palavras que aparecem em todos os documentos (como 'o', 'e') têm peso baixo.",
-    example: "Se a palavra 'neural' aparece 10x num artigo de IA mas só 2x nos outros 1000 artigos, ela tem TF-IDF alto → é uma palavra característica desse artigo.",
-    quiz: { q: "Uma palavra com TF-IDF alto significa que...", opts: ["Aparece em todos os documentos", "É muito comum em todo o corpus", "É característica de um documento específico", "É uma stopword"], correct: 2 }
-  },
-  { title: "Classificação de Texto",
-    explain: "Classificação de texto é atribuir uma categoria a um texto automaticamente. Exemplos: Spam vs Não-spam; Sentimento positivo/negativo; Tópico do artigo (desporto, política, tecnologia). O algoritmo mais clássico para texto é o Naive Bayes — usa probabilidades para decidir a classe mais provável dado o texto.",
-    example: "Email com as palavras 'ganhou', 'prémio', 'clique aqui' → probabilidade de spam: 95%. Email com 'reunião', 'relatório', 'equipa' → probabilidade de spam: 2%.",
-    quiz: { q: "Para que serve a classificação de texto?", opts: ["Apenas para detetar spam", "Atribuir automaticamente categorias a textos", "Traduzir textos", "Comprimir textos"], correct: 1 }
-  },
-  { title: "Word Embeddings — Palavras como Vectores",
-    explain: "Word Embeddings representam palavras como vectores numéricos num espaço onde palavras semelhantes ficam próximas. Word2Vec é o mais famoso: aprende que 'rei' - 'homem' + 'mulher' ≈ 'rainha'. Isto é muito mais poderoso que BoW porque captura significado e contexto.",
-    example: "No espaço de embeddings: 'cachorro' e 'gato' ficam próximos porque ambos são animais domésticos. 'Banco' (financeiro) e 'banco' (sentar) ficam em zonas diferentes.",
-    quiz: { q: "Qual a vantagem dos word embeddings sobre Bag of Words?", opts: ["São mais rápidos de calcular", "Capturam o significado e contexto das palavras", "Usam menos memória", "São mais fáceis de entender"], correct: 1 }
-  },
-];
-
-const astTopics = [
-  { title: "O que é uma Série Temporal?",
-    explain: "Uma série temporal é uma sequência de valores medidos ao longo do tempo, com intervalos regulares. A ordem importa! Não podes baralhar os dados como em ML tradicional. Exemplos: temperatura diária, preço de ações, vendas mensais, número de utilizadores por hora.",
-    example: "Temperatura em Lisboa: Jan:12°, Fev:13°, Mar:15°, Abr:17°, Mai:20°... Cada valor depende dos anteriores e tem padrões sazonais (Verão quente, Inverno frio).",
-    quiz: { q: "Qual é a característica fundamental de uma série temporal?", opts: ["Os valores são sempre crescentes", "A ordem temporal importa e os valores dependem do tempo", "Só tem valores positivos", "Deve ter exatamente 100 observações"], correct: 1 }
-  },
-  { title: "Componentes de uma Série Temporal",
-    explain: "Toda a série temporal tem componentes: (1) Tendência (Trend): direção geral — crescente, decrescente ou estável; (2) Sazonalidade (Seasonality): padrão que se repete — ex: vendas altas no Natal; (3) Ciclicidade: padrões mais longos, não fixos — ex: ciclos económicos; (4) Ruído (Residual): variação aleatória que não se explica.",
-    example: "Vendas de uma loja: Tendência crescente (negócio cresce) + Sazonalidade (picos no Natal) + Ruído (dia em que havia greve = vendas baixas inesperadas).",
-    quiz: { q: "O que é sazonalidade numa série temporal?", opts: ["A tendência geral da série", "Um padrão que se repete em intervalos fixos", "O ruído aleatório", "A média dos valores"], correct: 1 }
-  },
-  { title: "Estacionaridade e ACF/PACF",
-    explain: "Uma série é estacionária quando a média e variância não mudam ao longo do tempo — é uma condição necessária para muitos modelos. ACF (Autocorrelação): mede a correlação entre a série e versões dela própria deslocadas no tempo. PACF (Autocorrelação Parcial): o mesmo mas removendo o efeito dos lags intermédios. Usamos estes gráficos para escolher os parâmetros do modelo.",
-    example: "Se a ACF corta abruptamente no lag 2 e a PACF decai gradualmente → sugestão: modelo MA(2). Se o inverso → modelo AR.",
-    quiz: { q: "Para que servem os gráficos ACF e PACF?", opts: ["Para verificar se os dados são normais", "Para escolher os parâmetros p e q do modelo ARIMA", "Para remover outliers", "Para calcular a média da série"], correct: 1 }
-  },
-  { title: "Modelos ARIMA",
-    explain: "ARIMA(p,d,q) é o modelo mais clássico para séries temporais: AR(p) — AutoRegressive: o valor atual depende dos p valores anteriores; I(d) — Integrated: número de diferenciações para tornar a série estacionária; MA(q) — Moving Average: o valor atual depende dos q erros anteriores. SARIMA adiciona termos sazonais: SARIMA(p,d,q)(P,D,Q)[s].",
-    example: "ARIMA(1,1,1): usa 1 valor passado (AR), 1 diferenciação (I) para estacionaridade, e 1 erro passado (MA). É um modelo simples mas muito útil na prática.",
-    quiz: { q: "O que significa o 'd' em ARIMA(p,d,q)?", opts: ["Número de valores passados usados", "Número de diferenciações para estacionaridade", "Número de erros passados", "Duração do modelo"], correct: 1 }
-  },
-  { title: "Avaliação de Previsões",
-    explain: "Para saber se o modelo prevê bem, usamos métricas: MAE (Mean Absolute Error): erro médio absoluto — fácil de interpretar; RMSE (Root Mean Squared Error): penaliza mais os erros grandes; MAPE (Mean Absolute Percentage Error): erro em percentagem — bom para comparar séries diferentes. Quanto menor, melhor.",
-    example: "Modelo A: MAE = 5°C na previsão de temperatura. Modelo B: MAE = 2°C. Modelo B é melhor. Se MAPE = 10%, em média o modelo erra 10% do valor real.",
-    quiz: { q: "Qual métrica expressa o erro como percentagem?", opts: ["MAE", "RMSE", "MAPE", "R²"], correct: 2 }
-  },
-];
-
-const mbTopics = [
-  { title: "Teorema de Bayes — A Base de Tudo",
-    explain: "O Teorema de Bayes diz como actualizar a nossa crença quando obtemos nova informação. A fórmula é: P(A|B) = P(B|A) × P(A) / P(B). Em linguagem simples: a probabilidade de A dado que B aconteceu é proporcional à probabilidade de B dado A, multiplicado pela nossa crença inicial em A.",
-    example: "Teste de COVID com 99% de precisão. Se só 1% da população tem COVID e o teste deu positivo, qual a prob. de ter COVID? Pelo Bayes: ~50%! Parece contra-intuitivo mas é correto — doenças raras geram muitos falsos positivos.",
-    quiz: { q: "O que actualiza o Teorema de Bayes?", opts: ["A nossa crença com base em nova evidência", "A precisão dos instrumentos de medida", "A média da população", "A distribuição normal"], correct: 0 }
-  },
-  { title: "Prior, Likelihood e Posterior",
-    explain: "A Modelação Bayesiana tem 3 ingredientes: Prior P(θ): a nossa crença ANTES de ver os dados — o que sabemos ou assumimos; Likelihood P(dados|θ): a probabilidade de observar os dados dado um valor do parâmetro; Posterior P(θ|dados): a nossa crença DEPOIS de ver os dados — combina prior e likelihood. Fórmula: Posterior ∝ Likelihood × Prior.",
-    example: "Queremos estimar a probabilidade de uma moeda ser viciada. Prior: assumimos que é justa (50%). Likelihood: lançámos 10 vezes e saiu cara 8x. Posterior: actualizamos — agora acreditamos que é cerca de 70% cara.",
-    quiz: { q: "O Posterior combina...", opts: ["Apenas os dados observados", "Apenas o conhecimento prévio", "O Prior com a Likelihood (dados observados)", "A média e a variância"], correct: 2 }
-  },
-  { title: "Distribuições Conjugadas",
-    explain: "Uma distribuição conjugada é quando o Prior e o Posterior têm a mesma família de distribuições — muito conveniente matematicamente! Os pares mais comuns: Beta-Binomial: Prior Beta, dados Binomiais → Posterior Beta; Normal-Normal: Prior Normal, dados Normais → Posterior Normal. Isto permite calcular o Posterior analiticamente sem simulação.",
-    example: "Queres estimar a taxa de conversão de um site. Usas Prior Beta(1,1) (uniforme). Observas 30 compras em 100 visitas. Posterior: Beta(31, 71). A média do posterior é 31/102 ≈ 30% — próximo dos dados!",
-    quiz: { q: "Qual é a vantagem das distribuições conjugadas?", opts: ["São sempre a distribuição normal", "O Posterior tem a mesma família do Prior — fácil de calcular", "Só funcionam com dados binários", "Eliminam a necessidade do Prior"], correct: 1 }
-  },
-  { title: "Credible Intervals vs Intervalos de Confiança",
-    explain: "Esta é uma diferença crucial! Frequentista (Intervalo de Confiança): 'Se repetíssemos o experimento 100x, 95 vezes o intervalo conteria o verdadeiro valor'. NÃO diz que há 95% de prob. do parâmetro estar no intervalo! Bayesiano (Credible Interval): 'Há 95% de probabilidade de o parâmetro estar neste intervalo' — exactamente o que queremos dizer na prática. A interpretação Bayesiana é muito mais intuitiva!",
-    example: "Credible Interval de 95% para a taxa de conversão: [0.21, 0.39]. Interpretação: 'Há 95% de probabilidade de a taxa real estar entre 21% e 39%.' Simples e directo!",
-    quiz: { q: "Qual a interpretação correcta de um Credible Interval de 95%?", opts: ["95% dos dados estão neste intervalo", "Há 95% de probabilidade do parâmetro estar neste intervalo", "O experimento foi repetido 95 vezes", "O modelo tem 95% de precisão"], correct: 1 }
-  },
-];
-
-// ===== RENDER DAYS =====
-function renderDays() {
-  const container = document.getElementById('days-container');
-  const today = new Date('2026-06-15');
-  const checked = JSON.parse(localStorage.getItem('checked') || '{}');
-
-  days.forEach((day, i) => {
-    const isToday = i === 0;
-    const isPast = i < 0;
-    const isDone = checked[i];
-
-    const card = document.createElement('div');
-    card.className = `day-card${isToday ? ' today' : ''}${isDone ? ' done-day' : ''}`;
-    card.innerHTML = `
-      <div class="day-header" onclick="toggleDay(${i})">
-        <div class="day-num">${String(i+1).padStart(2,'0')}</div>
-        <div class="day-info">
-          <div class="day-date">${day.date}</div>
-          <div class="day-title">${day.label}</div>
-        </div>
-        <span class="day-badge ${day.badge}">${isToday ? '👉 HOJE' : day.badgeText}</span>
-        <button class="check-btn ${isDone ? 'checked' : ''}" onclick="event.stopPropagation(); toggleCheck(${i})" title="Marcar como feito">
-          ${isDone ? '✓' : ''}
-        </button>
-      </div>
-      <div class="day-body ${isToday ? 'open' : ''}" id="day-body-${i}">
-        <div class="session-block">
-          <div class="session-label">📖 O que fazer hoje de manhã</div>
-          ${day.tasks.map(t => `<div class="task-item"><div class="task-dot dot-${day.subject === 'exam' ? 'all' : day.subject}"></div><span>${t}</span></div>`).join('')}
-        </div>
-      </div>
-    `;
-    container.appendChild(card);
-  });
-  updateProgress();
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  const sec = document.getElementById(id);
+  if (sec) sec.classList.add('active');
+  // find the clicked tab
+  event.target.classList.add('active');
 }
 
-function toggleDay(i) {
-  const body = document.getElementById(`day-body-${i}`);
-  body.classList.toggle('open');
-}
-
-function toggleCheck(i) {
-  const checked = JSON.parse(localStorage.getItem('checked') || '{}');
-  checked[i] = !checked[i];
-  localStorage.setItem('checked', JSON.stringify(checked));
-  document.getElementById('days-container').innerHTML = '';
-  renderDays();
-}
-
-function updateProgress() {
-  const checked = JSON.parse(localStorage.getItem('checked') || '{}');
-  const total = days.length;
-  const done = Object.values(checked).filter(Boolean).length;
-  const tmDays = days.filter((d,i) => d.subject === 'tm').length;
-  const astDays = days.filter((d,i) => d.subject === 'ast').length;
-  const mbDays = days.filter((d,i) => d.subject === 'mb').length;
-  const tmDone = days.filter((d,i) => d.subject === 'tm' && checked[i]).length;
-  const astDone = days.filter((d,i) => d.subject === 'ast' && checked[i]).length;
-  const mbDone = days.filter((d,i) => d.subject === 'mb' && checked[i]).length;
-
-  document.getElementById('stat-done').textContent = done;
-  document.getElementById('stat-left').textContent = total - done;
-  document.getElementById('stat-pct').textContent = Math.round(done/total*100) + '%';
-
-  const tmPct = Math.round(tmDone/tmDays*100);
-  const astPct = Math.round(astDone/astDays*100);
-  const mbPct = Math.round(mbDone/mbDays*100);
-
-  document.getElementById('pct-tm').textContent = tmPct + '%';
-  document.getElementById('pct-ast').textContent = astPct + '%';
-  document.getElementById('pct-mb').textContent = mbPct + '%';
-  document.getElementById('bar-tm').style.width = tmPct + '%';
-  document.getElementById('bar-ast').style.width = astPct + '%';
-  document.getElementById('bar-mb').style.width = mbPct + '%';
-}
-
-// ===== RENDER PROFESSOR =====
-function renderTopics(topics, containerId, colorClass) {
-  const container = document.getElementById(containerId);
-  topics.forEach((topic, i) => {
-    const card = document.createElement('div');
-    card.className = 'topic-card';
-    card.innerHTML = `
-      <div class="topic-header" onclick="toggleTopic('topic-${containerId}-${i}', this)">
-        <div class="topic-title">${topic.title}</div>
-        <span class="topic-arrow" id="arrow-topic-${containerId}-${i}">▶</span>
-      </div>
-      <div class="topic-body" id="topic-${containerId}-${i}">
-        <h4>📖 Explicação</h4>
-        <p>${topic.explain}</p>
-        <div class="example-box">💡 ${topic.example}</div>
-        <h4>🧪 Mini Quiz</h4>
-        <div class="quiz-box">
-          <div class="quiz-q">${topic.quiz.q}</div>
-          ${topic.quiz.opts.map((opt, j) => `<div class="quiz-opt" onclick="checkQuiz(this, ${j}, ${topic.quiz.correct})">${String.fromCharCode(65+j)}) ${opt}</div>`).join('')}
-        </div>
-      </div>
-    `;
-    container.appendChild(card);
-  });
-}
-
-function toggleTopic(id, header) {
-  const body = document.getElementById(id);
-  const arrow = header.querySelector('.topic-arrow');
-  body.classList.toggle('open');
-  arrow.classList.toggle('open');
-}
-
-function checkQuiz(el, chosen, correct) {
-  const opts = el.parentElement.querySelectorAll('.quiz-opt');
-  opts.forEach(o => o.style.pointerEvents = 'none');
-  if (chosen === correct) {
-    el.classList.add('correct');
-    el.textContent = '✓ ' + el.textContent + ' — Correto!';
+function toggleCard(header) {
+  const content = header.nextElementSibling;
+  const chevron = header.querySelector('.chevron');
+  if (!content) return;
+  if (content.style.maxHeight && content.style.maxHeight !== '0px') {
+    content.style.maxHeight = '0px';
+    content.style.overflow = 'hidden';
+    if (chevron) chevron.style.transform = 'rotate(0deg)';
   } else {
-    el.classList.add('wrong');
-    opts[correct].classList.add('correct');
+    content.style.maxHeight = content.scrollHeight + 5000 + 'px';
+    content.style.overflow = 'visible';
+    if (chevron) chevron.style.transform = 'rotate(180deg)';
   }
 }
 
-function showSubject(sub, btn) {
-  document.querySelectorAll('.subject-content').forEach(c => c.style.display = 'none');
-  document.querySelectorAll('.subject-btn').forEach(b => b.className = 'subject-btn');
-  document.getElementById('content-' + sub).style.display = 'block';
-  btn.className = 'subject-btn active-' + sub;
+function showAllAnswers(cls) {
+  document.querySelectorAll('.' + cls).forEach(q => q.classList.add('show-ans'));
 }
 
-// ===== TABS =====
-function showSection(id, btn) {
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  btn.classList.add('active');
-}
-
-// ===== INIT =====
-renderDays();
-renderTopics(tmTopics, 'content-tm', 'tm');
-renderTopics(astTopics, 'content-ast', 'ast');
-renderTopics(mbTopics, 'content-mb', 'mb');
+// Initialize: open all card contents
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.collapsible-content').forEach(c => {
+    c.style.maxHeight = c.scrollHeight + 5000 + 'px';
+    c.style.overflow = 'visible';
+  });
+  // Also fix chevrons
+  document.querySelectorAll('.chevron').forEach(ch => ch.style.transform = 'rotate(180deg)');
+});
 </script>
 </body>
 </html>
